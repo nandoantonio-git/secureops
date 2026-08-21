@@ -1,0 +1,864 @@
+{
+  "userStories": [
+    {
+      "id": "T001",
+      "title": "Create SecureOps source tree directories",
+      "description": "Create SecureOps source tree directories in secureops/app/{api,models,db,engine/rules,remediation,github} and secureops/tests/{unit,integration,validation,fixtures}",
+      "discipline": "Setup",
+      "notes": "No dependencies, can start immediately.",
+      "fix": "",
+      "acceptanceCriteria": [
+        "Manual review: task content matches description (no automated file-syntax gate applies)"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T002",
+      "title": "Initialize Python 3.12 project metadata and dependencies",
+      "description": "Initialize Python 3.12 project metadata and dependencies in secureops/pyproject.toml",
+      "discipline": "Setup",
+      "notes": "",
+      "fix": "",
+      "acceptanceCriteria": [
+        "Manual review: task content matches description (no automated file-syntax gate applies)"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T003",
+      "title": "Configure pytest test discovery and markers",
+      "description": "Configure pytest test discovery and markers in secureops/pytest.ini",
+      "discipline": "Setup",
+      "notes": "[P] Can run in parallel with T004, T005, T006.",
+      "fix": "",
+      "acceptanceCriteria": [
+        "Manual review: task content matches description (no automated file-syntax gate applies)"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T004",
+      "title": "Create application package markers",
+      "description": "Create application package markers in secureops/app/__init__.py and subpackage __init__.py files",
+      "discipline": "Setup",
+      "notes": "[P] Can run in parallel with T003, T005, T006.",
+      "fix": "",
+      "acceptanceCriteria": [
+        "python -m py_compile secureops/app/__init__.py passa sem erros"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T005",
+      "title": "Add local environment example",
+      "description": "Add local environment example for PostgreSQL, gate mode, secondary language, and Ollama fallback in secureops/.env.example",
+      "discipline": "Setup",
+      "notes": "[P] Can run in parallel with T003, T004, T006.",
+      "fix": "",
+      "acceptanceCriteria": [
+        "Manual review: task content matches description (no automated file-syntax gate applies)"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T006",
+      "title": "Create controlled fixture directories",
+      "description": "Create controlled fixture directories for Python and secondary-language clean/vulnerable/fallback cases under secureops/tests/fixtures/",
+      "discipline": "Setup",
+      "notes": "[P] Can run in parallel with T003, T004, T005.",
+      "fix": "",
+      "acceptanceCriteria": [
+        "Manual review: task content matches description (no automated file-syntax gate applies)"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T007",
+      "title": "Define shared enums and constants",
+      "description": "Define shared enums and constants for analysis status, gate modes, finding status, severity, signal types, and recommendation sources in secureops/app/models/enums.py",
+      "discipline": "Foundational",
+      "notes": "Depends on Setup (Phase 1) completion. Blocks all user stories.",
+      "fix": "",
+      "acceptanceCriteria": [
+        "python -m py_compile secureops/app/models/enums.py passa sem erros"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T008",
+      "title": "Implement FastAPI application factory and health endpoint",
+      "description": "Implement FastAPI application factory and health endpoint in secureops/app/main.py",
+      "discipline": "Foundational",
+      "notes": "[P]",
+      "fix": "",
+      "acceptanceCriteria": [
+        "python -m py_compile secureops/app/main.py passa sem erros"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T009",
+      "title": "Implement Pydantic settings",
+      "description": "Implement Pydantic settings for database URL, secondary language, gate mode, and Ollama configuration in secureops/app/config.py",
+      "discipline": "Foundational",
+      "notes": "[P]",
+      "fix": "",
+      "acceptanceCriteria": [
+        "python -m py_compile secureops/app/config.py passa sem erros"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T010",
+      "title": "Implement PostgreSQL connection/session setup",
+      "description": "Implement PostgreSQL connection/session setup in secureops/app/db/connection.py",
+      "discipline": "Foundational",
+      "notes": "",
+      "fix": "",
+      "acceptanceCriteria": [
+        "python -m py_compile secureops/app/db/connection.py passa sem erros"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T011",
+      "title": "Create Alembic migration environment",
+      "description": "Create Alembic migration environment in secureops/app/db/migrations/",
+      "discipline": "Foundational",
+      "notes": "",
+      "fix": "",
+      "acceptanceCriteria": [
+        "Manual review: task content matches description (no automated file-syntax gate applies)"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T012",
+      "title": "Define SQLAlchemy models for all core entities",
+      "description": "Define SQLAlchemy models for PullRequestAnalysis, Finding, RemediationRecommendation, DetectionSignal, GateDecision, LanguageCoverageProfile, LanguageCoverageResult, FindingHistoryEntry, and ValidationScenario in secureops/app/models/analysis.py, secureops/app/models/finding.py, and secureops/app/models/remediation.py",
+      "discipline": "Foundational",
+      "notes": "See data-model.md for entity fields.",
+      "fix": "",
+      "acceptanceCriteria": [
+        "python -m py_compile secureops/app/models/analysis.py passa sem erros",
+        "python -m py_compile secureops/app/models/finding.py passa sem erros",
+        "python -m py_compile secureops/app/models/remediation.py passa sem erros"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T013",
+      "title": "Implement initial migration for all entities",
+      "description": "Implement initial migration for all entities and relationships in secureops/app/db/migrations/versions/001_initial_secureops_schema.py",
+      "discipline": "Foundational",
+      "notes": "Depends on T012.",
+      "fix": "",
+      "acceptanceCriteria": [
+        "python -m py_compile secureops/app/db/migrations/versions/001_initial_secureops_schema.py passa sem erros"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T014",
+      "title": "Implement OpenAPI request/response schemas",
+      "description": "Implement OpenAPI request/response schemas from contracts/openapi.yaml in secureops/app/api/schemas.py",
+      "discipline": "Foundational",
+      "notes": "[P]",
+      "fix": "",
+      "acceptanceCriteria": [
+        "python -m py_compile secureops/app/api/schemas.py passa sem erros"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T015",
+      "title": "Implement redacted domain error types",
+      "description": "Implement redacted domain error types and API error responses in secureops/app/api/errors.py",
+      "discipline": "Foundational",
+      "notes": "[P]",
+      "fix": "",
+      "acceptanceCriteria": [
+        "python -m py_compile secureops/app/api/errors.py passa sem erros"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T016",
+      "title": "Implement Tree-sitter parser adapter",
+      "description": "Implement Tree-sitter parser adapter for Python and selected secondary language in secureops/app/engine/parser.py",
+      "discipline": "Foundational",
+      "notes": "",
+      "fix": "",
+      "acceptanceCriteria": [
+        "python -m py_compile secureops/app/engine/parser.py passa sem erros"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T017",
+      "title": "Implement stable finding fingerprint helper",
+      "description": "Implement stable finding fingerprint helper in secureops/app/engine/fingerprint.py",
+      "discipline": "Foundational",
+      "notes": "",
+      "fix": "",
+      "acceptanceCriteria": [
+        "python -m py_compile secureops/app/engine/fingerprint.py passa sem erros"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T018",
+      "title": "Add baseline validation fixtures",
+      "description": "Add baseline validation fixtures listed in quickstart.md under secureops/tests/fixtures/",
+      "discipline": "Foundational",
+      "notes": "[P]",
+      "fix": "",
+      "acceptanceCriteria": [
+        "Manual review: task content matches description (no automated file-syntax gate applies)"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T019",
+      "title": "Add API contract tests",
+      "description": "Add API contract tests for /analyses, /findings/{findingId}, and /analyses/{analysisId}/gate-decision in secureops/tests/integration/test_openapi_contract.py",
+      "discipline": "Foundational",
+      "notes": "[P]. Checkpoint: Foundation ready once T007-T019 complete.",
+      "fix": "",
+      "acceptanceCriteria": [
+        "python -m py_compile secureops/tests/integration/test_openapi_contract.py passa sem erros",
+        "pytest secureops/tests/integration/test_openapi_contract.py"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T020",
+      "title": "Add unit tests for remediation template selection",
+      "description": "Add unit tests for reviewed remediation template selection and context adaptation in secureops/tests/unit/test_remediation_templates.py",
+      "discipline": "US1",
+      "notes": "[P] TDD: write test first, ensure it FAILS before implementation (T029).",
+      "fix": "",
+      "acceptanceCriteria": [
+        "python -m py_compile secureops/tests/unit/test_remediation_templates.py passa sem erros"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T021",
+      "title": "Add unit tests for deterministic/template fallback",
+      "description": "Add unit tests for deterministic/template fallback when Ollama is unavailable in secureops/tests/unit/test_remediation_fallback.py",
+      "discipline": "US1",
+      "notes": "[P] TDD: write test first, ensure it FAILS before implementation (T031).",
+      "fix": "",
+      "acceptanceCriteria": [
+        "python -m py_compile secureops/tests/unit/test_remediation_fallback.py passa sem erros"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T022",
+      "title": "Add unit tests for Python vulnerable/safe fixture detection",
+      "description": "Add unit tests for Python vulnerable fixture detection and safe fixture non-detection in secureops/tests/unit/test_python_rules.py",
+      "discipline": "US1",
+      "notes": "[P] TDD: write test first, ensure it FAILS before implementation (T027).",
+      "fix": "",
+      "acceptanceCriteria": [
+        "python -m py_compile secureops/tests/unit/test_python_rules.py passa sem erros"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T023",
+      "title": "Add integration test for analysis creation and findings listing",
+      "description": "Add integration test for creating an analysis and listing structured findings in secureops/tests/integration/test_analysis_feedback_flow.py",
+      "discipline": "US1",
+      "notes": "[P] TDD: write test first, ensure it FAILS before implementation (T036).",
+      "fix": "",
+      "acceptanceCriteria": [
+        "python -m py_compile secureops/tests/integration/test_analysis_feedback_flow.py passa sem erros"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T024",
+      "title": "Add validation test for advisory Python PR feedback",
+      "description": "Add validation test for quickstart Scenario 1 advisory Python PR feedback in secureops/tests/validation/test_advisory_python_feedback.py",
+      "discipline": "US1",
+      "notes": "[P] TDD: write test first, ensure it FAILS before implementation.",
+      "fix": "",
+      "acceptanceCriteria": [
+        "python -m py_compile secureops/tests/validation/test_advisory_python_feedback.py passa sem erros"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T025",
+      "title": "Add validation test for Ollama unavailable fallback",
+      "description": "Add validation test for quickstart Scenario 6 Ollama unavailable fallback in secureops/tests/validation/test_ollama_fallback.py",
+      "discipline": "US1",
+      "notes": "[P] TDD: write test first, ensure it FAILS before implementation (T030).",
+      "fix": "",
+      "acceptanceCriteria": [
+        "python -m py_compile secureops/tests/validation/test_ollama_fallback.py passa sem erros"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T026",
+      "title": "Add unit tests for sensitive evidence redaction",
+      "description": "Add unit tests ensuring PR feedback redacts sensitive evidence such as hardcoded secrets, tokens, credentials, database URLs, and private keys while preserving enough context for actionability in secureops/tests/unit/test_pr_feedback_redaction.py",
+      "discipline": "US1",
+      "notes": "[P] TDD: write test first, ensure it FAILS before implementation (T035). Security-sensitive: see FR-005.",
+      "fix": "",
+      "acceptanceCriteria": [
+        "python -m py_compile secureops/tests/unit/test_pr_feedback_redaction.py passa sem erros"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T027",
+      "title": "Implement Python deterministic vulnerability rules",
+      "description": "Implement Python deterministic vulnerability rules with code evidence extraction in secureops/app/engine/rules/python.py",
+      "discipline": "US1",
+      "notes": "[P] Makes T022 pass.",
+      "fix": "",
+      "acceptanceCriteria": [
+        "python -m py_compile secureops/app/engine/rules/python.py passa sem erros",
+        "pytest secureops/tests/unit/test_python_rules.py"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T028",
+      "title": "Implement scan orchestration",
+      "description": "Implement scan orchestration that parses changed files and creates findings in secureops/app/engine/scan.py",
+      "discipline": "US1",
+      "notes": "Depends on T016, T017, T027.",
+      "fix": "",
+      "acceptanceCriteria": [
+        "python -m py_compile secureops/app/engine/scan.py passa sem erros"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T029",
+      "title": "Implement reviewed remediation template catalog",
+      "description": "Implement reviewed remediation template catalog for common known patterns in secureops/app/remediation/templates.py",
+      "discipline": "US1",
+      "notes": "[P] Makes T020 pass.",
+      "fix": "",
+      "acceptanceCriteria": [
+        "python -m py_compile secureops/app/remediation/templates.py passa sem erros",
+        "pytest secureops/tests/unit/test_remediation_templates.py"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T030",
+      "title": "Implement Ollama client with timeout and low-confidence handling",
+      "description": "Implement Ollama client with timeout and low-confidence handling in secureops/app/remediation/ollama_client.py",
+      "discipline": "US1",
+      "notes": "[P] Contributes to T025 passing.",
+      "fix": "",
+      "acceptanceCriteria": [
+        "python -m py_compile secureops/app/remediation/ollama_client.py passa sem erros",
+        "pytest secureops/tests/validation/test_ollama_fallback.py"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T031",
+      "title": "Implement deterministic/template fallback recommendation generation",
+      "description": "Implement deterministic/template fallback recommendation generation in secureops/app/remediation/fallback.py",
+      "discipline": "US1",
+      "notes": "Makes T021 pass. Depends on T029, T030.",
+      "fix": "",
+      "acceptanceCriteria": [
+        "python -m py_compile secureops/app/remediation/fallback.py passa sem erros",
+        "pytest secureops/tests/unit/test_remediation_fallback.py"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T032",
+      "title": "Implement remediation service",
+      "description": "Implement remediation service that always returns cause, evidence, impact, correction, and safe example for published findings in secureops/app/remediation/service.py",
+      "discipline": "US1",
+      "notes": "Depends on T029, T030, T031. See FR-003.",
+      "fix": "",
+      "acceptanceCriteria": [
+        "python -m py_compile secureops/app/remediation/service.py passa sem erros"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T033",
+      "title": "Implement analysis creation and retrieval endpoints",
+      "description": "Implement analysis creation and retrieval endpoints in secureops/app/api/analyses.py",
+      "discipline": "US1",
+      "notes": "Depends on T014, T028.",
+      "fix": "",
+      "acceptanceCriteria": [
+        "python -m py_compile secureops/app/api/analyses.py passa sem erros"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T034",
+      "title": "Implement finding listing/detail endpoints",
+      "description": "Implement finding listing/detail endpoints in secureops/app/api/findings.py",
+      "discipline": "US1",
+      "notes": "Depends on T014.",
+      "fix": "",
+      "acceptanceCriteria": [
+        "python -m py_compile secureops/app/api/findings.py passa sem erros"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T035",
+      "title": "Implement GitHub PR comment formatter",
+      "description": "Implement GitHub PR comment formatter for structured, redacted feedback that includes cause, evidence, impact, correction, and safe example without exposing sensitive values in secureops/app/github/comments.py",
+      "discipline": "US1",
+      "notes": "[P] Makes T026 pass. Security-sensitive: see FR-005, NFR 8.1.",
+      "fix": "",
+      "acceptanceCriteria": [
+        "python -m py_compile secureops/app/github/comments.py passa sem erros",
+        "pytest secureops/tests/unit/test_pr_feedback_redaction.py"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T036",
+      "title": "Integrate scan, remediation, persistence, and PR comment formatting",
+      "description": "Integrate scan, remediation, persistence, and PR comment formatting in secureops/app/api/analyses.py",
+      "discipline": "US1",
+      "notes": "Makes T023 and T024 pass. Depends on T028, T032, T033, T035. Checkpoint: US1 (MVP) independently functional after this task.",
+      "fix": "",
+      "acceptanceCriteria": [
+        "python -m py_compile secureops/app/api/analyses.py passa sem erros",
+        "pytest secureops/tests/integration/test_analysis_feedback_flow.py",
+        "pytest secureops/tests/validation/test_advisory_python_feedback.py"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T037",
+      "title": "Document local US1 validation command",
+      "description": "Document local US1 validation command and expected evidence in secureops/README.md",
+      "discipline": "US1",
+      "notes": "Depends on US1 implementation being complete.",
+      "fix": "",
+      "acceptanceCriteria": [
+        "Manual review: task content matches description (no automated file-syntax gate applies)"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T038",
+      "title": "Add unit tests for Python data-flow tracking",
+      "description": "Add unit tests for Python data-flow tracking from untrusted inputs to sensitive sinks in secureops/tests/unit/test_taint.py",
+      "discipline": "US2",
+      "notes": "[P] TDD: write test first, ensure it FAILS before implementation (T042).",
+      "fix": "",
+      "acceptanceCriteria": [
+        "python -m py_compile secureops/tests/unit/test_taint.py passa sem erros"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T039",
+      "title": "Add unit tests for secondary-language vulnerable/safe fixtures",
+      "description": "Add unit tests for secondary-language vulnerable and safe fixtures in secureops/tests/unit/test_secondary_rules.py",
+      "discipline": "US2",
+      "notes": "[P] TDD: write test first, ensure it FAILS before implementation (T043).",
+      "fix": "",
+      "acceptanceCriteria": [
+        "python -m py_compile secureops/tests/unit/test_secondary_rules.py passa sem erros"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T040",
+      "title": "Add integration test for language coverage profiles",
+      "description": "Add integration test for language coverage profiles and limitations in secureops/tests/integration/test_language_coverage.py",
+      "discipline": "US2",
+      "notes": "[P] TDD: write test first, ensure it FAILS before implementation (T045).",
+      "fix": "",
+      "acceptanceCriteria": [
+        "python -m py_compile secureops/tests/integration/test_language_coverage.py passa sem erros"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T041",
+      "title": "Add validation tests for language depth scenarios",
+      "description": "Add validation tests for quickstart Scenarios 2 and 3 in secureops/tests/validation/test_language_depth.py",
+      "discipline": "US2",
+      "notes": "[P] TDD: write test first, ensure it FAILS before implementation.",
+      "fix": "",
+      "acceptanceCriteria": [
+        "python -m py_compile secureops/tests/validation/test_language_depth.py passa sem erros"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T042",
+      "title": "Implement Python taint analysis",
+      "description": "Implement Python taint analysis from untrusted sources to sensitive sinks in secureops/app/engine/taint.py",
+      "discipline": "US2",
+      "notes": "Makes T038 pass.",
+      "fix": "",
+      "acceptanceCriteria": [
+        "python -m py_compile secureops/app/engine/taint.py passa sem erros",
+        "pytest secureops/tests/unit/test_taint.py"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T043",
+      "title": "Implement secondary-language deterministic rule coverage",
+      "description": "Implement secondary-language deterministic rule coverage in secureops/app/engine/rules/secondary.py",
+      "discipline": "US2",
+      "notes": "[P] Makes T039 pass.",
+      "fix": "",
+      "acceptanceCriteria": [
+        "python -m py_compile secureops/app/engine/rules/secondary.py passa sem erros",
+        "pytest secureops/tests/unit/test_secondary_rules.py"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T044",
+      "title": "Integrate taint and secondary-language findings into scan orchestration",
+      "description": "Integrate taint findings and secondary-language findings into scan orchestration in secureops/app/engine/scan.py",
+      "discipline": "US2",
+      "notes": "Depends on T042, T043.",
+      "fix": "",
+      "acceptanceCriteria": [
+        "python -m py_compile secureops/app/engine/scan.py passa sem erros"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T045",
+      "title": "Implement language coverage profile/result persistence",
+      "description": "Implement language coverage profile/result persistence in secureops/app/models/analysis.py and secureops/app/api/analyses.py",
+      "discipline": "US2",
+      "notes": "Makes T040 pass.",
+      "fix": "",
+      "acceptanceCriteria": [
+        "python -m py_compile secureops/app/models/analysis.py passa sem erros",
+        "python -m py_compile secureops/app/api/analyses.py passa sem erros",
+        "pytest secureops/tests/integration/test_language_coverage.py"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T046",
+      "title": "Surface asymmetric language limitations in responses and PR feedback",
+      "description": "Surface asymmetric language limitations in analysis responses and PR feedback in secureops/app/github/comments.py",
+      "discipline": "US2",
+      "notes": "See FR-010.",
+      "fix": "",
+      "acceptanceCriteria": [
+        "python -m py_compile secureops/app/github/comments.py passa sem erros"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T047",
+      "title": "Document secondary-language rule and known limitations",
+      "description": "Document supported secondary-language rule and known limitations in secureops/README.md",
+      "discipline": "US2",
+      "notes": "Checkpoint: US2 demonstrates two-language support with explicit unequal depth after this phase.",
+      "fix": "",
+      "acceptanceCriteria": [
+        "Manual review: task content matches description (no automated file-syntax gate applies)"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T048",
+      "title": "Add unit tests for deterministic detection-signal eligibility",
+      "description": "Add unit tests for deterministic detection-signal eligibility in secureops/tests/unit/test_gate_eligibility.py",
+      "discipline": "US3",
+      "notes": "[P] TDD: write test first, ensure it FAILS before implementation (T053).",
+      "fix": "",
+      "acceptanceCriteria": [
+        "python -m py_compile secureops/tests/unit/test_gate_eligibility.py passa sem erros"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T049",
+      "title": "Add integration test for gate-decision endpoint",
+      "description": "Add integration test for /analyses/{analysisId}/gate-decision in advisory and blocking modes in secureops/tests/integration/test_gate_api.py",
+      "discipline": "US3",
+      "notes": "[P] TDD: write test first, ensure it FAILS before implementation (T053).",
+      "fix": "",
+      "acceptanceCriteria": [
+        "python -m py_compile secureops/tests/integration/test_gate_api.py passa sem erros"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T050",
+      "title": "Add validation test for restricted critical blocking",
+      "description": "Add validation test for quickstart Scenario 4 restricted critical blocking in secureops/tests/validation/test_restricted_blocking.py",
+      "discipline": "US3",
+      "notes": "[P] TDD: write test first, ensure it FAILS before implementation.",
+      "fix": "",
+      "acceptanceCriteria": [
+        "python -m py_compile secureops/tests/validation/test_restricted_blocking.py passa sem erros"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T051",
+      "title": "Add validation test for clean-code non-blocking",
+      "description": "Add validation test for quickstart Scenario 5 clean-code non-blocking in secureops/tests/validation/test_clean_non_blocking.py",
+      "discipline": "US3",
+      "notes": "[P] TDD: write test first, ensure it FAILS before implementation.",
+      "fix": "",
+      "acceptanceCriteria": [
+        "python -m py_compile secureops/tests/validation/test_clean_non_blocking.py passa sem erros"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T052",
+      "title": "Implement detection signal creation",
+      "description": "Implement detection signal creation for deterministic rules, data-flow evidence, template matches, and AI-assisted classification in secureops/app/engine/scan.py",
+      "discipline": "US3",
+      "notes": "",
+      "fix": "",
+      "acceptanceCriteria": [
+        "python -m py_compile secureops/app/engine/scan.py passa sem erros"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T053",
+      "title": "Implement gate decision service",
+      "description": "Implement gate decision service enforcing advisory default and deterministic critical-blocking criteria in secureops/app/api/gate.py",
+      "discipline": "US3",
+      "notes": "Makes T048 and T049 pass. Critical: blocking must never depend solely on AI judgment (FR-018).",
+      "fix": "",
+      "acceptanceCriteria": [
+        "python -m py_compile secureops/app/api/gate.py passa sem erros",
+        "pytest secureops/tests/unit/test_gate_eligibility.py",
+        "pytest secureops/tests/integration/test_gate_api.py"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T054",
+      "title": "Implement GitHub status/check output",
+      "description": "Implement GitHub status/check output for advisory, passed, and blocked decisions in secureops/app/github/status.py",
+      "discipline": "US3",
+      "notes": "",
+      "fix": "",
+      "acceptanceCriteria": [
+        "python -m py_compile secureops/app/github/status.py passa sem erros"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T055",
+      "title": "Integrate gate decision persistence and response schemas",
+      "description": "Integrate gate decision persistence and response schemas in secureops/app/api/analyses.py and secureops/app/api/gate.py",
+      "discipline": "US3",
+      "notes": "",
+      "fix": "",
+      "acceptanceCriteria": [
+        "python -m py_compile secureops/app/api/analyses.py passa sem erros",
+        "python -m py_compile secureops/app/api/gate.py passa sem erros"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T056",
+      "title": "Add controlled critical-unprotected and clean-code validation fixtures",
+      "description": "Add controlled critical-unprotected and clean-code validation fixtures in secureops/tests/fixtures/python_vulnerable/ and secureops/tests/fixtures/python_clean/",
+      "discipline": "US3",
+      "notes": "Checkpoint: US3 controls blocking without AI-only authority and zero undue blocks in clean scenarios after this phase.",
+      "fix": "",
+      "acceptanceCriteria": [
+        "Manual review: task content matches description (no automated file-syntax gate applies)"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T057",
+      "title": "Add unit tests for finding lifecycle transitions",
+      "description": "Add unit tests for valid and invalid finding lifecycle transitions in secureops/tests/unit/test_finding_lifecycle.py",
+      "discipline": "US4",
+      "notes": "[P] TDD: write test first, ensure it FAILS before implementation (T060).",
+      "fix": "",
+      "acceptanceCriteria": [
+        "python -m py_compile secureops/tests/unit/test_finding_lifecycle.py passa sem erros"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T058",
+      "title": "Add integration test for finding override endpoint",
+      "description": "Add integration test for /findings/{findingId}/override in secureops/tests/integration/test_finding_override_api.py",
+      "discipline": "US4",
+      "notes": "[P] TDD: write test first, ensure it FAILS before implementation (T061).",
+      "fix": "",
+      "acceptanceCriteria": [
+        "python -m py_compile secureops/tests/integration/test_finding_override_api.py passa sem erros"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T059",
+      "title": "Add validation test for manual override and history",
+      "description": "Add validation test for quickstart Scenario 7 manual override and history in secureops/tests/validation/test_manual_override_history.py",
+      "discipline": "US4",
+      "notes": "[P] TDD: write test first, ensure it FAILS before implementation.",
+      "fix": "",
+      "acceptanceCriteria": [
+        "python -m py_compile secureops/tests/validation/test_manual_override_history.py passa sem erros"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T060",
+      "title": "Implement finding lifecycle transition validation",
+      "description": "Implement finding lifecycle transition validation in secureops/app/models/finding.py",
+      "discipline": "US4",
+      "notes": "Makes T057 pass.",
+      "fix": "",
+      "acceptanceCriteria": [
+        "python -m py_compile secureops/app/models/finding.py passa sem erros",
+        "pytest secureops/tests/unit/test_finding_lifecycle.py"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T061",
+      "title": "Implement manual override service with append-only history",
+      "description": "Implement manual override service with append-only history creation in secureops/app/api/findings.py",
+      "discipline": "US4",
+      "notes": "Makes T058 pass.",
+      "fix": "",
+      "acceptanceCriteria": [
+        "python -m py_compile secureops/app/api/findings.py passa sem erros",
+        "pytest secureops/tests/integration/test_finding_override_api.py"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T062",
+      "title": "Preserve overridden findings across repeated analyses",
+      "description": "Preserve overridden findings across repeated analyses using stable fingerprints in secureops/app/engine/fingerprint.py and secureops/app/engine/scan.py",
+      "discipline": "US4",
+      "notes": "",
+      "fix": "",
+      "acceptanceCriteria": [
+        "python -m py_compile secureops/app/engine/fingerprint.py passa sem erros",
+        "python -m py_compile secureops/app/engine/scan.py passa sem erros"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T063",
+      "title": "Include history entries in finding detail API responses",
+      "description": "Include history entries in finding detail API responses in secureops/app/api/findings.py",
+      "discipline": "US4",
+      "notes": "",
+      "fix": "",
+      "acceptanceCriteria": [
+        "python -m py_compile secureops/app/api/findings.py passa sem erros"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T064",
+      "title": "Document manual override validation evidence",
+      "description": "Document manual override validation evidence in secureops/README.md",
+      "discipline": "US4",
+      "notes": "Checkpoint: US4 supports minimal governance without full RBAC or audit-log scope after this phase.",
+      "fix": "",
+      "acceptanceCriteria": [
+        "Manual review: task content matches description (no automated file-syntax gate applies)"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T065",
+      "title": "Update quickstart execution notes",
+      "description": "Update quickstart execution notes with actual commands and fixture paths in specs/001-secureops-pr-feedback/quickstart.md",
+      "discipline": "Polish",
+      "notes": "[P]",
+      "fix": "",
+      "acceptanceCriteria": [
+        "Manual review: task content matches description (no automated file-syntax gate applies)"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T066",
+      "title": "Add FIAP evaluation traceability notes",
+      "description": "Add FIAP evaluation traceability notes for architecture, SAST robustness, AI innovation, DevSecOps, and defense evidence in specs/001-secureops-pr-feedback/plan.md",
+      "discipline": "Polish",
+      "notes": "[P]",
+      "fix": "",
+      "acceptanceCriteria": [
+        "Manual review: task content matches description (no automated file-syntax gate applies)"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T067",
+      "title": "Run full unit, integration, and validation suites",
+      "description": "Run full unit, integration, and validation suites with pytest from secureops/",
+      "discipline": "Polish",
+      "notes": "Depends on all desired user stories being complete.",
+      "fix": "",
+      "acceptanceCriteria": [
+        "pytest secureops/tests"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T068",
+      "title": "Verify controlled corpus results",
+      "description": "Verify controlled corpus results for finding usefulness, clean-code non-blocking, critical blocking, secondary-language coverage, and Ollama fallback in secureops/tests/validation/",
+      "discipline": "Polish",
+      "notes": "See Success Metrics 1-6 in the PRD.",
+      "fix": "",
+      "acceptanceCriteria": [
+        "pytest secureops/tests/validation"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T069",
+      "title": "Review generated findings for actionability",
+      "description": "Review generated findings for actionability and remove or downgrade any finding lacking cause, evidence, impact, correction, and safe example in secureops/app/engine/rules/ and secureops/app/remediation/",
+      "discipline": "Polish",
+      "notes": "Manual/human review task tied to Success Metric 4 (100% of published findings include cause, evidence, impact, correction, safe example).",
+      "fix": "",
+      "acceptanceCriteria": [
+        "Manual review: task content matches description (no automated file-syntax gate applies)"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T070",
+      "title": "Document local verification blockers and PR dry-run evidence",
+      "description": "Document any local verification blocker and safest manual PR dry-run evidence in secureops/README.md",
+      "discipline": "Polish",
+      "notes": "Final release-readiness documentation task.",
+      "fix": "",
+      "acceptanceCriteria": [
+        "Manual review: task content matches description (no automated file-syntax gate applies)"
+      ],
+      "passes": false
+    }
+  ]
+}
