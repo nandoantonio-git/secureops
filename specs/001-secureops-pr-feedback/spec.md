@@ -13,6 +13,7 @@
 ### Session 2026-08-20
 
 - Q: Quando o módulo local de IA falhar ou estiver indisponível, como a plataforma deve se comportar para findings que normalmente usariam IA? → A: Usar fallback determinístico/template e continuar a análise
+- Q: A rastreabilidade acadêmica do Princípio IV deve virar um requisito funcional formal na spec.md, ou ficar fora dela como documentação/material de defesa sem FR específico? → A: Registrar como assumption/constraint, sem novo FR
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -147,6 +148,7 @@ Como pessoa responsável pela governança de segurança, quero alterar o status 
 - The primary user is a developer receiving feedback during Pull Request review.
 - The responsible governance user is a Security Champion, Tech Lead, or equivalent technical owner.
 - The product is evaluated on Pull Request feedback quality before executive reporting or analytics.
+- Relevant architecture decisions must remain traceable in documentation or defense material to FIAP evaluation criteria such as architecture, SAST robustness, AI innovation, DevSecOps, and technical defense, without creating a product-facing functional requirement.
 - The MVP intentionally uses asymmetric language support: one primary language with deeper analysis and one secondary language with limited but real coverage.
 - The exact identities of the two programming languages are selected during planning, while the product requirement remains two-language support with asymmetric depth.
 - Advisory mode is the default operating mode for adoption and demonstration safety.
