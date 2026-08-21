@@ -74,20 +74,21 @@
 - [ ] T023 [P] [US1] Add integration test for creating an analysis and listing structured findings in `secureops/tests/integration/test_analysis_feedback_flow.py`
 - [ ] T024 [P] [US1] Add validation test for quickstart Scenario 1 advisory Python PR feedback in `secureops/tests/validation/test_advisory_python_feedback.py`
 - [ ] T025 [P] [US1] Add validation test for quickstart Scenario 6 Ollama unavailable fallback in `secureops/tests/validation/test_ollama_fallback.py`
+- [ ] T026 [P] [US1] Add unit tests ensuring PR feedback redacts sensitive evidence such as hardcoded secrets, tokens, credentials, database URLs, and private keys while preserving enough context for actionability in `secureops/tests/unit/test_pr_feedback_redaction.py`
 
 ### Implementation for User Story 1
 
-- [ ] T026 [P] [US1] Implement Python deterministic vulnerability rules with code evidence extraction in `secureops/app/engine/rules/python.py`
-- [ ] T027 [US1] Implement scan orchestration that parses changed files and creates findings in `secureops/app/engine/scan.py`
-- [ ] T028 [P] [US1] Implement reviewed remediation template catalog for common known patterns in `secureops/app/remediation/templates.py`
-- [ ] T029 [P] [US1] Implement Ollama client with timeout and low-confidence handling in `secureops/app/remediation/ollama_client.py`
-- [ ] T030 [US1] Implement deterministic/template fallback recommendation generation in `secureops/app/remediation/fallback.py`
-- [ ] T031 [US1] Implement remediation service that always returns cause, evidence, impact, correction, and safe example for published findings in `secureops/app/remediation/service.py`
-- [ ] T032 [US1] Implement analysis creation and retrieval endpoints in `secureops/app/api/analyses.py`
-- [ ] T033 [US1] Implement finding listing/detail endpoints in `secureops/app/api/findings.py`
-- [ ] T034 [P] [US1] Implement GitHub PR comment formatter for structured feedback in `secureops/app/github/comments.py`
-- [ ] T035 [US1] Integrate scan, remediation, persistence, and PR comment formatting in `secureops/app/api/analyses.py`
-- [ ] T036 [US1] Document local US1 validation command and expected evidence in `secureops/README.md`
+- [ ] T027 [P] [US1] Implement Python deterministic vulnerability rules with code evidence extraction in `secureops/app/engine/rules/python.py`
+- [ ] T028 [US1] Implement scan orchestration that parses changed files and creates findings in `secureops/app/engine/scan.py`
+- [ ] T029 [P] [US1] Implement reviewed remediation template catalog for common known patterns in `secureops/app/remediation/templates.py`
+- [ ] T030 [P] [US1] Implement Ollama client with timeout and low-confidence handling in `secureops/app/remediation/ollama_client.py`
+- [ ] T031 [US1] Implement deterministic/template fallback recommendation generation in `secureops/app/remediation/fallback.py`
+- [ ] T032 [US1] Implement remediation service that always returns cause, evidence, impact, correction, and safe example for published findings in `secureops/app/remediation/service.py`
+- [ ] T033 [US1] Implement analysis creation and retrieval endpoints in `secureops/app/api/analyses.py`
+- [ ] T034 [US1] Implement finding listing/detail endpoints in `secureops/app/api/findings.py`
+- [ ] T035 [P] [US1] Implement GitHub PR comment formatter for structured, redacted feedback that includes cause, evidence, impact, correction, and safe example without exposing sensitive values in `secureops/app/github/comments.py`
+- [ ] T036 [US1] Integrate scan, remediation, persistence, and PR comment formatting in `secureops/app/api/analyses.py`
+- [ ] T037 [US1] Document local US1 validation command and expected evidence in `secureops/README.md`
 
 **Checkpoint**: User Story 1 is independently functional and testable as the MVP.
 
@@ -103,19 +104,19 @@
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T037 [P] [US2] Add unit tests for Python data-flow tracking from untrusted inputs to sensitive sinks in `secureops/tests/unit/test_taint.py`
-- [ ] T038 [P] [US2] Add unit tests for secondary-language vulnerable and safe fixtures in `secureops/tests/unit/test_secondary_rules.py`
-- [ ] T039 [P] [US2] Add integration test for language coverage profiles and limitations in `secureops/tests/integration/test_language_coverage.py`
-- [ ] T040 [P] [US2] Add validation tests for quickstart Scenarios 2 and 3 in `secureops/tests/validation/test_language_depth.py`
+- [ ] T038 [P] [US2] Add unit tests for Python data-flow tracking from untrusted inputs to sensitive sinks in `secureops/tests/unit/test_taint.py`
+- [ ] T039 [P] [US2] Add unit tests for secondary-language vulnerable and safe fixtures in `secureops/tests/unit/test_secondary_rules.py`
+- [ ] T040 [P] [US2] Add integration test for language coverage profiles and limitations in `secureops/tests/integration/test_language_coverage.py`
+- [ ] T041 [P] [US2] Add validation tests for quickstart Scenarios 2 and 3 in `secureops/tests/validation/test_language_depth.py`
 
 ### Implementation for User Story 2
 
-- [ ] T041 [US2] Implement Python taint analysis from untrusted sources to sensitive sinks in `secureops/app/engine/taint.py`
-- [ ] T042 [P] [US2] Implement secondary-language deterministic rule coverage in `secureops/app/engine/rules/secondary.py`
-- [ ] T043 [US2] Integrate taint findings and secondary-language findings into scan orchestration in `secureops/app/engine/scan.py`
-- [ ] T044 [US2] Implement language coverage profile/result persistence in `secureops/app/models/analysis.py` and `secureops/app/api/analyses.py`
-- [ ] T045 [US2] Surface asymmetric language limitations in analysis responses and PR feedback in `secureops/app/github/comments.py`
-- [ ] T046 [US2] Document supported secondary-language rule and known limitations in `secureops/README.md`
+- [ ] T042 [US2] Implement Python taint analysis from untrusted sources to sensitive sinks in `secureops/app/engine/taint.py`
+- [ ] T043 [P] [US2] Implement secondary-language deterministic rule coverage in `secureops/app/engine/rules/secondary.py`
+- [ ] T044 [US2] Integrate taint findings and secondary-language findings into scan orchestration in `secureops/app/engine/scan.py`
+- [ ] T045 [US2] Implement language coverage profile/result persistence in `secureops/app/models/analysis.py` and `secureops/app/api/analyses.py`
+- [ ] T046 [US2] Surface asymmetric language limitations in analysis responses and PR feedback in `secureops/app/github/comments.py`
+- [ ] T047 [US2] Document supported secondary-language rule and known limitations in `secureops/README.md`
 
 **Checkpoint**: User Story 2 demonstrates two-language support with explicit unequal depth.
 
@@ -131,18 +132,18 @@
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T047 [P] [US3] Add unit tests for deterministic detection-signal eligibility in `secureops/tests/unit/test_gate_eligibility.py`
-- [ ] T048 [P] [US3] Add integration test for `/analyses/{analysisId}/gate-decision` in advisory and blocking modes in `secureops/tests/integration/test_gate_api.py`
-- [ ] T049 [P] [US3] Add validation test for quickstart Scenario 4 restricted critical blocking in `secureops/tests/validation/test_restricted_blocking.py`
-- [ ] T050 [P] [US3] Add validation test for quickstart Scenario 5 clean-code non-blocking in `secureops/tests/validation/test_clean_non_blocking.py`
+- [ ] T048 [P] [US3] Add unit tests for deterministic detection-signal eligibility in `secureops/tests/unit/test_gate_eligibility.py`
+- [ ] T049 [P] [US3] Add integration test for `/analyses/{analysisId}/gate-decision` in advisory and blocking modes in `secureops/tests/integration/test_gate_api.py`
+- [ ] T050 [P] [US3] Add validation test for quickstart Scenario 4 restricted critical blocking in `secureops/tests/validation/test_restricted_blocking.py`
+- [ ] T051 [P] [US3] Add validation test for quickstart Scenario 5 clean-code non-blocking in `secureops/tests/validation/test_clean_non_blocking.py`
 
 ### Implementation for User Story 3
 
-- [ ] T051 [US3] Implement detection signal creation for deterministic rules, data-flow evidence, template matches, and AI-assisted classification in `secureops/app/engine/scan.py`
-- [ ] T052 [US3] Implement gate decision service enforcing advisory default and deterministic critical-blocking criteria in `secureops/app/api/gate.py`
-- [ ] T053 [US3] Implement GitHub status/check output for advisory, passed, and blocked decisions in `secureops/app/github/status.py`
-- [ ] T054 [US3] Integrate gate decision persistence and response schemas in `secureops/app/api/analyses.py` and `secureops/app/api/gate.py`
-- [ ] T055 [US3] Add controlled critical-unprotected and clean-code validation fixtures in `secureops/tests/fixtures/python_vulnerable/` and `secureops/tests/fixtures/python_clean/`
+- [ ] T052 [US3] Implement detection signal creation for deterministic rules, data-flow evidence, template matches, and AI-assisted classification in `secureops/app/engine/scan.py`
+- [ ] T053 [US3] Implement gate decision service enforcing advisory default and deterministic critical-blocking criteria in `secureops/app/api/gate.py`
+- [ ] T054 [US3] Implement GitHub status/check output for advisory, passed, and blocked decisions in `secureops/app/github/status.py`
+- [ ] T055 [US3] Integrate gate decision persistence and response schemas in `secureops/app/api/analyses.py` and `secureops/app/api/gate.py`
+- [ ] T056 [US3] Add controlled critical-unprotected and clean-code validation fixtures in `secureops/tests/fixtures/python_vulnerable/` and `secureops/tests/fixtures/python_clean/`
 
 **Checkpoint**: User Story 3 controls blocking without AI-only authority and with zero undue blocks in clean controlled scenarios.
 
@@ -158,17 +159,17 @@
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T056 [P] [US4] Add unit tests for valid and invalid finding lifecycle transitions in `secureops/tests/unit/test_finding_lifecycle.py`
-- [ ] T057 [P] [US4] Add integration test for `/findings/{findingId}/override` in `secureops/tests/integration/test_finding_override_api.py`
-- [ ] T058 [P] [US4] Add validation test for quickstart Scenario 7 manual override and history in `secureops/tests/validation/test_manual_override_history.py`
+- [ ] T057 [P] [US4] Add unit tests for valid and invalid finding lifecycle transitions in `secureops/tests/unit/test_finding_lifecycle.py`
+- [ ] T058 [P] [US4] Add integration test for `/findings/{findingId}/override` in `secureops/tests/integration/test_finding_override_api.py`
+- [ ] T059 [P] [US4] Add validation test for quickstart Scenario 7 manual override and history in `secureops/tests/validation/test_manual_override_history.py`
 
 ### Implementation for User Story 4
 
-- [ ] T059 [US4] Implement finding lifecycle transition validation in `secureops/app/models/finding.py`
-- [ ] T060 [US4] Implement manual override service with append-only history creation in `secureops/app/api/findings.py`
-- [ ] T061 [US4] Preserve overridden findings across repeated analyses using stable fingerprints in `secureops/app/engine/fingerprint.py` and `secureops/app/engine/scan.py`
-- [ ] T062 [US4] Include history entries in finding detail API responses in `secureops/app/api/findings.py`
-- [ ] T063 [US4] Document manual override validation evidence in `secureops/README.md`
+- [ ] T060 [US4] Implement finding lifecycle transition validation in `secureops/app/models/finding.py`
+- [ ] T061 [US4] Implement manual override service with append-only history creation in `secureops/app/api/findings.py`
+- [ ] T062 [US4] Preserve overridden findings across repeated analyses using stable fingerprints in `secureops/app/engine/fingerprint.py` and `secureops/app/engine/scan.py`
+- [ ] T063 [US4] Include history entries in finding detail API responses in `secureops/app/api/findings.py`
+- [ ] T064 [US4] Document manual override validation evidence in `secureops/README.md`
 
 **Checkpoint**: User Story 4 supports minimal governance without introducing full RBAC or audit-log scope.
 
@@ -178,12 +179,12 @@
 
 **Purpose**: Final validation, documentation, and checkpoint/defense evidence across implemented stories.
 
-- [ ] T064 [P] Update quickstart execution notes with actual commands and fixture paths in `specs/001-secureops-pr-feedback/quickstart.md`
-- [ ] T065 [P] Add FIAP evaluation traceability notes for architecture, SAST robustness, AI innovation, DevSecOps, and defense evidence in `specs/001-secureops-pr-feedback/plan.md`
-- [ ] T066 Run full unit, integration, and validation suites with `pytest` from `secureops/`
-- [ ] T067 Verify controlled corpus results for finding usefulness, clean-code non-blocking, critical blocking, secondary-language coverage, and Ollama fallback in `secureops/tests/validation/`
-- [ ] T068 Review generated findings for actionability and remove or downgrade any finding lacking cause, evidence, impact, correction, and safe example in `secureops/app/engine/rules/` and `secureops/app/remediation/`
-- [ ] T069 Document any local verification blocker and safest manual PR dry-run evidence in `secureops/README.md`
+- [ ] T065 [P] Update quickstart execution notes with actual commands and fixture paths in `specs/001-secureops-pr-feedback/quickstart.md`
+- [ ] T066 [P] Add FIAP evaluation traceability notes for architecture, SAST robustness, AI innovation, DevSecOps, and defense evidence in `specs/001-secureops-pr-feedback/plan.md`
+- [ ] T067 Run full unit, integration, and validation suites with `pytest` from `secureops/`
+- [ ] T068 Verify controlled corpus results for finding usefulness, clean-code non-blocking, critical blocking, secondary-language coverage, and Ollama fallback in `secureops/tests/validation/`
+- [ ] T069 Review generated findings for actionability and remove or downgrade any finding lacking cause, evidence, impact, correction, and safe example in `secureops/app/engine/rules/` and `secureops/app/remediation/`
+- [ ] T070 Document any local verification blocker and safest manual PR dry-run evidence in `secureops/README.md`
 
 ---
 
@@ -233,33 +234,33 @@ Task: "T022 [P] [US1] Add unit tests for Python vulnerable fixture detection and
 Task: "T023 [P] [US1] Add integration test for creating an analysis and listing structured findings in secureops/tests/integration/test_analysis_feedback_flow.py"
 
 # Launch independent implementation work after tests are in place:
-Task: "T026 [P] [US1] Implement Python deterministic vulnerability rules with code evidence extraction in secureops/app/engine/rules/python.py"
-Task: "T028 [P] [US1] Implement reviewed remediation template catalog for common known patterns in secureops/app/remediation/templates.py"
-Task: "T029 [P] [US1] Implement Ollama client with timeout and low-confidence handling in secureops/app/remediation/ollama_client.py"
+Task: "T027 [P] [US1] Implement Python deterministic vulnerability rules with code evidence extraction in secureops/app/engine/rules/python.py"
+Task: "T029 [P] [US1] Implement reviewed remediation template catalog for common known patterns in secureops/app/remediation/templates.py"
+Task: "T030 [P] [US1] Implement Ollama client with timeout and low-confidence handling in secureops/app/remediation/ollama_client.py"
 ```
 
 ## Parallel Example: User Story 2
 
 ```bash
-Task: "T037 [P] [US2] Add unit tests for Python data-flow tracking from untrusted inputs to sensitive sinks in secureops/tests/unit/test_taint.py"
-Task: "T038 [P] [US2] Add unit tests for secondary-language vulnerable and safe fixtures in secureops/tests/unit/test_secondary_rules.py"
-Task: "T042 [P] [US2] Implement secondary-language deterministic rule coverage in secureops/app/engine/rules/secondary.py"
+Task: "T038 [P] [US2] Add unit tests for Python data-flow tracking from untrusted inputs to sensitive sinks in secureops/tests/unit/test_taint.py"
+Task: "T039 [P] [US2] Add unit tests for secondary-language vulnerable and safe fixtures in secureops/tests/unit/test_secondary_rules.py"
+Task: "T043 [P] [US2] Implement secondary-language deterministic rule coverage in secureops/app/engine/rules/secondary.py"
 ```
 
 ## Parallel Example: User Story 3
 
 ```bash
-Task: "T047 [P] [US3] Add unit tests for deterministic detection-signal eligibility in secureops/tests/unit/test_gate_eligibility.py"
-Task: "T048 [P] [US3] Add integration test for /analyses/{analysisId}/gate-decision in advisory and blocking modes in secureops/tests/integration/test_gate_api.py"
-Task: "T049 [P] [US3] Add validation test for quickstart Scenario 4 restricted critical blocking in secureops/tests/validation/test_restricted_blocking.py"
+Task: "T048 [P] [US3] Add unit tests for deterministic detection-signal eligibility in secureops/tests/unit/test_gate_eligibility.py"
+Task: "T049 [P] [US3] Add integration test for /analyses/{analysisId}/gate-decision in advisory and blocking modes in secureops/tests/integration/test_gate_api.py"
+Task: "T050 [P] [US3] Add validation test for quickstart Scenario 4 restricted critical blocking in secureops/tests/validation/test_restricted_blocking.py"
 ```
 
 ## Parallel Example: User Story 4
 
 ```bash
-Task: "T056 [P] [US4] Add unit tests for valid and invalid finding lifecycle transitions in secureops/tests/unit/test_finding_lifecycle.py"
-Task: "T057 [P] [US4] Add integration test for /findings/{findingId}/override in secureops/tests/integration/test_finding_override_api.py"
-Task: "T058 [P] [US4] Add validation test for quickstart Scenario 7 manual override and history in secureops/tests/validation/test_manual_override_history.py"
+Task: "T057 [P] [US4] Add unit tests for valid and invalid finding lifecycle transitions in secureops/tests/unit/test_finding_lifecycle.py"
+Task: "T058 [P] [US4] Add integration test for /findings/{findingId}/override in secureops/tests/integration/test_finding_override_api.py"
+Task: "T059 [P] [US4] Add validation test for quickstart Scenario 7 manual override and history in secureops/tests/validation/test_manual_override_history.py"
 ```
 
 ---
