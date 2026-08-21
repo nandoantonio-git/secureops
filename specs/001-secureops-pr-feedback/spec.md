@@ -8,6 +8,12 @@
 
 **Input**: User description: "Uma plataforma que analisa Pull Requests em busca de vulnerabilidades de código e devolve feedback diretamente no PR: o que foi encontrado, por que é um risco, e como corrigir de forma concreta e confiável — não apenas uma lista de findings. A plataforma cobre duas linguagens de programação, com profundidade desigual: uma linguagem principal recebe análise completa, incluindo rastreamento de fluxo de dados de entradas não confiáveis até pontos sensíveis do código; a segunda linguagem recebe cobertura mínima, porém real, o suficiente para caracterizar suporte multilíngua perante avaliação externa. Cada finding gerado deve vir acompanhado de uma explicação estruturada: causa, evidência, impacto e correção recomendada com exemplo seguro — nunca uma sugestão genérica ou não fundamentada. Para os padrões de vulnerabilidade mais comuns e já conhecidos, a correção sugerida deve seguir um modelo revisado previamente, adaptado ao contexto específico do código analisado. A plataforma tem um mecanismo de bloqueio de merge, mas ele começa em modo consultivo por padrão. O bloqueio automático real só se aplica a um subconjunto restrito de findings críticos, validados por múltiplos métodos de detecção, não por um único sinal isolado — a decisão de bloquear nunca deve depender exclusivamente de julgamento de um componente de IA. Cada finding tem ciclo de vida com status e pode ser sobrescrito manualmente por uma pessoa responsável, mantendo histórico da mudança. Critério de sucesso: pelo menos 80% dos findings válidos devem ter a correção sugerida avaliada como útil por revisores humanos. O mecanismo de bloqueio automático não deve gerar bloqueios indevidos em código limpo, e deve bloquear corretamente quando exposto a um caso conhecido de vulnerabilidade crítica sem proteção. Fora do escopo: painel executivo/analítico como experiência central, controle de acesso por papel e trilha de auditoria completa, qualquer mecanismo de aprendizado/ajuste do componente de IA como requisito obrigatório."
 
+## Clarifications
+
+### Session 2026-08-20
+
+- Q: Quando o módulo local de IA falhar ou estiver indisponível, como a plataforma deve se comportar para findings que normalmente usariam IA? → A: Usar fallback determinístico/template e continuar a análise
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Receber feedback acionável no Pull Request (Priority: P1)
@@ -82,7 +88,7 @@ Como pessoa responsável pela governança de segurança, quero alterar o status 
 - Código vulnerável contém evidência suficiente para detecção, mas não para uma correção segura específica.
 - A mesma vulnerabilidade aparece repetida em múltiplos arquivos ou linhas.
 - Finding previamente marcado como falso positivo reaparece em nova análise.
-- O componente de recomendação não consegue produzir uma sugestão confiável.
+- O componente local de IA falha, fica indisponível ou não consegue produzir sugestão confiável; a plataforma deve usar fallback determinístico/template e continuar a análise quando houver evidência determinística suficiente.
 - Um caso crítico é detectado por apenas um sinal isolado, sem validação adicional.
 - Pessoa responsável altera manualmente um status enquanto uma nova análise está em andamento.
 
@@ -112,6 +118,7 @@ Como pessoa responsável pela governança de segurança, quero alterar o status 
 - **FR-020**: System MAY include an analytical or executive view as supporting context, but this view MUST NOT be required for the primary Pull Request feedback workflow.
 - **FR-021**: System MUST NOT require AI model training, fine-tuning, or adaptive learning to function correctly in this version.
 - **FR-022**: System MAY include experimental learning or tuning capabilities only if the core Pull Request feedback, advisory mode, restricted blocking, and manual override workflows continue to function without them.
+- **FR-023**: System MUST continue Pull Request analysis when the local AI component fails or is unavailable by using deterministic or template-based fallback for AI-assisted recommendations whenever deterministic evidence is sufficient.
 
 ### Key Entities
 
@@ -144,6 +151,6 @@ Como pessoa responsável pela governança de segurança, quero alterar o status 
 - The exact identities of the two programming languages are selected during planning, while the product requirement remains two-language support with asymmetric depth.
 - Advisory mode is the default operating mode for adoption and demonstration safety.
 - Restricted blocking can be enabled only for known critical patterns with sufficient validation.
-- AI-assisted recommendation may improve wording or prioritization, but core operation, explanation structure, and blocking decisions must remain valid without model training or adaptive learning.
+- AI-assisted recommendation may improve wording or prioritization, but core operation, explanation structure, blocking decisions, and deterministic/template fallback behavior must remain valid when local AI is unavailable or fails.
 - Full role-based access control and full audit logging are outside this version; minimal responsibility and history tracking are still required for manual overrides.
 - Analytical dashboards may exist as supporting views, but they are not required to complete the primary user journey.
