@@ -10,7 +10,7 @@
       "acceptanceCriteria": [
         "Manual review: task content matches description (no automated file-syntax gate applies)"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T002",
@@ -22,7 +22,7 @@
       "acceptanceCriteria": [
         "Manual review: task content matches description (no automated file-syntax gate applies)"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T003",
@@ -34,7 +34,7 @@
       "acceptanceCriteria": [
         "Manual review: task content matches description (no automated file-syntax gate applies)"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T004",
@@ -46,7 +46,7 @@
       "acceptanceCriteria": [
         "python -m py_compile secureops/app/__init__.py passa sem erros"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T005",
@@ -58,7 +58,7 @@
       "acceptanceCriteria": [
         "Manual review: task content matches description (no automated file-syntax gate applies)"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T006",
@@ -70,7 +70,7 @@
       "acceptanceCriteria": [
         "Manual review: task content matches description (no automated file-syntax gate applies)"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T007",
@@ -82,7 +82,7 @@
       "acceptanceCriteria": [
         "python -m py_compile secureops/app/models/enums.py passa sem erros"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T008",
@@ -94,7 +94,7 @@
       "acceptanceCriteria": [
         "python -m py_compile secureops/app/main.py passa sem erros"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T009",
@@ -106,7 +106,7 @@
       "acceptanceCriteria": [
         "python -m py_compile secureops/app/config.py passa sem erros"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T010",
@@ -118,7 +118,7 @@
       "acceptanceCriteria": [
         "python -m py_compile secureops/app/db/connection.py passa sem erros"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T011",
@@ -130,7 +130,7 @@
       "acceptanceCriteria": [
         "Manual review: task content matches description (no automated file-syntax gate applies)"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T012",
@@ -144,7 +144,7 @@
         "python -m py_compile secureops/app/models/finding.py passa sem erros",
         "python -m py_compile secureops/app/models/remediation.py passa sem erros"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T013",
@@ -156,7 +156,7 @@
       "acceptanceCriteria": [
         "python -m py_compile secureops/app/db/migrations/versions/001_initial_secureops_schema.py passa sem erros"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T014",
@@ -168,7 +168,7 @@
       "acceptanceCriteria": [
         "python -m py_compile secureops/app/api/schemas.py passa sem erros"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T015",
@@ -180,7 +180,7 @@
       "acceptanceCriteria": [
         "python -m py_compile secureops/app/api/errors.py passa sem erros"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T016",
@@ -192,7 +192,7 @@
       "acceptanceCriteria": [
         "python -m py_compile secureops/app/engine/parser.py passa sem erros"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T017",
@@ -204,7 +204,7 @@
       "acceptanceCriteria": [
         "python -m py_compile secureops/app/engine/fingerprint.py passa sem erros"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T018",
@@ -216,7 +216,7 @@
       "acceptanceCriteria": [
         "Manual review: task content matches description (no automated file-syntax gate applies)"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T019",
@@ -229,7 +229,7 @@
         "python -m py_compile secureops/tests/integration/test_openapi_contract.py passa sem erros",
         "pytest secureops/tests/integration/test_openapi_contract.py"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T020",
@@ -241,7 +241,7 @@
       "acceptanceCriteria": [
         "python -m py_compile secureops/tests/unit/test_remediation_templates.py passa sem erros"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T021",
@@ -253,7 +253,7 @@
       "acceptanceCriteria": [
         "python -m py_compile secureops/tests/unit/test_remediation_fallback.py passa sem erros"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T022",
@@ -265,7 +265,7 @@
       "acceptanceCriteria": [
         "python -m py_compile secureops/tests/unit/test_python_rules.py passa sem erros"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T023",
@@ -277,7 +277,7 @@
       "acceptanceCriteria": [
         "python -m py_compile secureops/tests/integration/test_analysis_feedback_flow.py passa sem erros"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T024",
@@ -289,7 +289,7 @@
       "acceptanceCriteria": [
         "python -m py_compile secureops/tests/validation/test_advisory_python_feedback.py passa sem erros"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T025",
@@ -301,7 +301,7 @@
       "acceptanceCriteria": [
         "python -m py_compile secureops/tests/validation/test_ollama_fallback.py passa sem erros"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T026",
@@ -313,7 +313,7 @@
       "acceptanceCriteria": [
         "python -m py_compile secureops/tests/unit/test_pr_feedback_redaction.py passa sem erros"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T027",
@@ -326,7 +326,7 @@
         "python -m py_compile secureops/app/engine/rules/python.py passa sem erros",
         "pytest secureops/tests/unit/test_python_rules.py"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T028",
@@ -338,7 +338,7 @@
       "acceptanceCriteria": [
         "python -m py_compile secureops/app/engine/scan.py passa sem erros"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T029",
@@ -351,7 +351,7 @@
         "python -m py_compile secureops/app/remediation/templates.py passa sem erros",
         "pytest secureops/tests/unit/test_remediation_templates.py"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T030",
@@ -364,7 +364,7 @@
         "python -m py_compile secureops/app/remediation/ollama_client.py passa sem erros",
         "pytest secureops/tests/validation/test_ollama_fallback.py"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T031",
@@ -377,7 +377,7 @@
         "python -m py_compile secureops/app/remediation/fallback.py passa sem erros",
         "pytest secureops/tests/unit/test_remediation_fallback.py"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T032",
@@ -389,7 +389,7 @@
       "acceptanceCriteria": [
         "python -m py_compile secureops/app/remediation/service.py passa sem erros"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T033",
@@ -401,7 +401,7 @@
       "acceptanceCriteria": [
         "python -m py_compile secureops/app/api/analyses.py passa sem erros"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T034",
@@ -413,7 +413,7 @@
       "acceptanceCriteria": [
         "python -m py_compile secureops/app/api/findings.py passa sem erros"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T035",
@@ -426,7 +426,7 @@
         "python -m py_compile secureops/app/github/comments.py passa sem erros",
         "pytest secureops/tests/unit/test_pr_feedback_redaction.py"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T036",
@@ -440,7 +440,7 @@
         "pytest secureops/tests/integration/test_analysis_feedback_flow.py",
         "pytest secureops/tests/validation/test_advisory_python_feedback.py"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T037",
@@ -452,7 +452,7 @@
       "acceptanceCriteria": [
         "Manual review: task content matches description (no automated file-syntax gate applies)"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T038",
@@ -464,7 +464,7 @@
       "acceptanceCriteria": [
         "python -m py_compile secureops/tests/unit/test_taint.py passa sem erros"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T039",
@@ -476,7 +476,7 @@
       "acceptanceCriteria": [
         "python -m py_compile secureops/tests/unit/test_secondary_rules.py passa sem erros"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T040",
@@ -488,7 +488,7 @@
       "acceptanceCriteria": [
         "python -m py_compile secureops/tests/integration/test_language_coverage.py passa sem erros"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T041",
@@ -500,7 +500,7 @@
       "acceptanceCriteria": [
         "python -m py_compile secureops/tests/validation/test_language_depth.py passa sem erros"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T042",
