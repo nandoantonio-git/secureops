@@ -35,6 +35,47 @@ def _enum(enum_type: type) -> Enum:
     )
 
 
+_VALID_FINDING_STATUS_TRANSITIONS: dict[FindingStatus, frozenset[FindingStatus]] = {
+    FindingStatus.OPEN: frozenset(
+        {
+            FindingStatus.IN_INVESTIGATION,
+            FindingStatus.RESOLVED,
+            FindingStatus.FALSE_POSITIVE,
+            FindingStatus.ACCEPTED_RISK,
+        }
+    ),
+    FindingStatus.IN_INVESTIGATION: frozenset(
+        {
+            FindingStatus.OPEN,
+            FindingStatus.RESOLVED,
+            FindingStatus.FALSE_POSITIVE,
+            FindingStatus.ACCEPTED_RISK,
+        }
+    ),
+    FindingStatus.RESOLVED: frozenset({FindingStatus.OPEN}),
+    FindingStatus.FALSE_POSITIVE: frozenset({FindingStatus.OPEN}),
+    FindingStatus.ACCEPTED_RISK: frozenset({FindingStatus.OPEN}),
+}
+
+
+class InvalidFindingStatusTransition(ValueError):
+    """Raised when a finding status transition is not allowed."""
+
+
+def validate_finding_status_transition(
+    from_status: FindingStatus,
+    to_status: FindingStatus,
+) -> None:
+    """Validate that a finding can move from one lifecycle status to another."""
+
+    if to_status in _VALID_FINDING_STATUS_TRANSITIONS.get(from_status, frozenset()):
+        return
+
+    raise InvalidFindingStatusTransition(
+        f"Invalid finding status transition from {from_status} to {to_status}."
+    )
+
+
 class Finding(Base):
     """Vulnerability report tied to a source location and evidence."""
 
@@ -156,4 +197,6 @@ __all__ = [
     "DetectionSignal",
     "Finding",
     "FindingHistoryEntry",
+    "InvalidFindingStatusTransition",
+    "validate_finding_status_transition",
 ]

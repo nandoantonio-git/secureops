@@ -39,7 +39,7 @@ def test_ollama_unavailable_uses_reviewed_template_when_pattern_matches() -> Non
     assert "shell=True" not in _field(recommendation, "safe_example")
 
 
-def test_ollama_unavailable_uses_deterministic_guidance_without_template() -> None:
+def test_ollama_unavailable_uses_reviewed_yaml_template() -> None:
     context = RemediationFallbackContext(
         rule_id="python.yaml.unsafe_load",
         category="CWE-502",
@@ -55,10 +55,10 @@ def test_ollama_unavailable_uses_deterministic_guidance_without_template() -> No
     recommendation = build_fallback_recommendation(context)
 
     assert _field(recommendation, "generation_source") == (
-        RecommendationSource.DETERMINISTIC_FALLBACK
+        RecommendationSource.REVIEWED_TEMPLATE
     )
-    assert _field(recommendation, "template_id") is None
-    assert _field(recommendation, "confidence") == RecommendationConfidence.MEDIUM
+    assert _field(recommendation, "template_id") == "python-unsafe-yaml-load"
+    assert _field(recommendation, "confidence") == RecommendationConfidence.HIGH
     assert "ollama_unavailable" in _field(recommendation, "evidence")
     assert "yaml.load(raw_yaml, Loader=yaml.Loader)" in _field(
         recommendation,

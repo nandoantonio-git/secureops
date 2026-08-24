@@ -5,9 +5,11 @@ from __future__ import annotations
 from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Union
 
 from app.engine.fingerprint import build_finding_fingerprint
+from app.engine.fingerprint import fingerprint_finding
+from app.engine.fingerprint import normalize_finding_anchor
 from app.engine.parser import (
     ParserError,
     UnsupportedLanguageError,
@@ -19,10 +21,19 @@ from app.engine.rules.python import (
     PythonRuleFinding,
     detect_python_vulnerabilities_from_source,
 )
-from app.models.enums import FindingStatus
+from app.engine.rules.secondary import (
+    SecondaryRuleFinding,
+    detect_secondary_vulnerabilities_from_source,
+)
+from app.engine.taint import detect_python_taint_flows_from_source
+from app.models.enums import FindingSource, FindingStatus, SignalType
+from app.remediation.templates import select_template
 
 if TYPE_CHECKING:
+    from app.models.finding import DetectionSignal
     from app.models.finding import Finding
+
+RuleFinding = Union[PythonRuleFinding, SecondaryRuleFinding]
 
 
 @dataclass(frozen=True)
@@ -74,6 +85,8 @@ def orchestrate_scan(
     analysis_id: str,
     repository: str,
     changed_files: Iterable[Any],
+    *,
+    previous_findings: Iterable[Any] | None = None,
 ) -> ScanResult:
     """Parse changed files, run supported rules, and create ORM findings."""
 
@@ -137,6 +150,9 @@ def orchestrate_scan(
             findings.append(scanned_finding.finding)
             scanned_findings.append(scanned_finding)
 
+    if previous_findings is not None:
+        preserve_overridden_findings(findings, previous_findings)
+
     return ScanResult(
         findings=findings,
         scanned_findings=scanned_findings,
@@ -149,6 +165,8 @@ def scan_changed_files(
     analysis_id: str,
     repository: str,
     changed_files: Iterable[Any],
+    *,
+    previous_findings: Iterable[Any] | None = None,
 ) -> list[Finding]:
     """Return ORM findings created from changed files."""
 
@@ -156,6 +174,7 @@ def scan_changed_files(
         analysis_id,
         repository,
         changed_files,
+        previous_findings=previous_findings,
     ).findings
 
 
@@ -163,22 +182,51 @@ def create_findings(
     analysis_id: str,
     repository: str,
     changed_files: Iterable[Any],
+    *,
+    previous_findings: Iterable[Any] | None = None,
 ) -> list[Finding]:
     """Compatibility wrapper for callers that only need finding objects."""
 
-    return scan_changed_files(analysis_id, repository, changed_files)
+    return scan_changed_files(
+        analysis_id,
+        repository,
+        changed_files,
+        previous_findings=previous_findings,
+    )
 
 
 def scan_analysis(analysis: Any, changed_files: Iterable[Any]) -> ScanResult:
     """Run a scan for an analysis ORM object and attach created findings."""
 
+    previous_findings = list(getattr(analysis, "findings", []))
     result = orchestrate_scan(
         str(analysis.id),
         str(analysis.repository),
         changed_files,
+        previous_findings=previous_findings,
     )
     analysis.findings.extend(result.findings)
     return result
+
+
+def preserve_overridden_findings(
+    findings: list[Finding],
+    previous_findings: Iterable[Any],
+) -> list[Finding]:
+    """Carry forward manual override state onto same-fingerprint findings."""
+
+    overridden_by_fingerprint = _overridden_findings_by_fingerprint(previous_findings)
+    for finding in findings:
+        fingerprint = _fingerprint_for_existing_finding(finding)
+        if fingerprint is None:
+            continue
+
+        overridden_finding = overridden_by_fingerprint.get(fingerprint)
+        if overridden_finding is None:
+            continue
+
+        _copy_override_state(finding, overridden_finding)
+    return findings
 
 
 def _coerce_changed_file(raw_changed_file: Any) -> ChangedFileCandidate | None:
@@ -244,11 +292,21 @@ def _run_rules(
     *,
     language: str,
     file_path: str,
-) -> list[PythonRuleFinding]:
+) -> list[RuleFinding]:
     if language == "python":
-        return detect_python_vulnerabilities_from_source(
+        rule_findings = detect_python_vulnerabilities_from_source(
             source_text,
             file_path=file_path,
+        )
+        return [
+            *rule_findings,
+            *detect_python_taint_flows_from_source(source_text, file_path=file_path),
+        ]
+    if language == "javascript":
+        return detect_secondary_vulnerabilities_from_source(
+            source_text,
+            file_path=file_path,
+            language=language,
         )
     return []
 
@@ -257,7 +315,7 @@ def _create_scanned_finding(
     *,
     analysis_id: str,
     repository: str,
-    rule_finding: PythonRuleFinding,
+    rule_finding: RuleFinding,
 ) -> ScannedFinding:
     from app.models.finding import Finding
 
@@ -288,6 +346,7 @@ def _create_scanned_finding(
         source=rule_finding.source,
         fingerprint=fingerprint,
     )
+    finding.detection_signals.extend(_create_detection_signals(rule_finding))
     return ScannedFinding(
         finding=finding,
         evidence=rule_finding.evidence,
@@ -297,22 +356,190 @@ def _create_scanned_finding(
     )
 
 
-def _stable_anchor(rule_finding: PythonRuleFinding) -> str:
-    parts = [
-        rule_finding.rule_id,
-        rule_finding.sink,
+def _create_detection_signals(rule_finding: RuleFinding) -> list[DetectionSignal]:
+    from app.models.finding import DetectionSignal
+
+    signals = [
+        DetectionSignal(
+            signal_type=SignalType.DETERMINISTIC_RULE,
+            deterministic=True,
+            summary=f"Deterministic rule {rule_finding.rule_id} matched.",
+        ),
     ]
-    if rule_finding.user_input:
-        parts.append(rule_finding.user_input)
-    else:
-        parts.append(rule_finding.evidence)
-    return ":".join(parts)
+    if rule_finding.source == FindingSource.PRIMARY_LANGUAGE_TAINT:
+        signals.append(
+            DetectionSignal(
+                signal_type=SignalType.DATA_FLOW,
+                deterministic=True,
+                summary=_data_flow_signal_summary(rule_finding),
+            ),
+        )
+
+    template_id = _matching_template_id(rule_finding)
+    if template_id is not None:
+        signals.append(
+            DetectionSignal(
+                signal_type=SignalType.TEMPLATE_MATCH,
+                deterministic=True,
+                summary=(
+                    f"Reviewed remediation template {template_id} matched "
+                    f"{rule_finding.rule_id}."
+                ),
+            ),
+        )
+
+    if _include_ai_assisted_classification(rule_finding):
+        signals.append(
+            DetectionSignal(
+                signal_type=SignalType.AI_ASSISTED_CLASSIFICATION,
+                deterministic=False,
+                summary=(
+                    "AI-assisted classification may enrich review context "
+                    f"for {rule_finding.rule_id}."
+                ),
+            ),
+        )
+
+    return signals
 
 
-def _field(value: Any, name: str) -> Any:
+def _data_flow_signal_summary(rule_finding: RuleFinding) -> str:
+    source = rule_finding.user_input or "untrusted input"
+    return f"Data flow from {source} to {rule_finding.sink} matched."
+
+
+def _matching_template_id(rule_finding: RuleFinding) -> str | None:
+    template = select_template(
+        rule_id=rule_finding.rule_id,
+        category=rule_finding.category,
+        language=rule_finding.language,
+    )
+    if template is None:
+        return None
+    return template.template_id
+
+
+def _include_ai_assisted_classification(rule_finding: RuleFinding) -> bool:
+    return rule_finding.source != FindingSource.PRIMARY_LANGUAGE_TAINT
+
+
+def _stable_anchor(rule_finding: RuleFinding) -> str:
+    anchor_value = rule_finding.user_input or rule_finding.evidence
+    anchor = normalize_finding_anchor(
+        rule_finding.rule_id,
+        rule_finding.source,
+        rule_finding.sink,
+        anchor_value,
+    )
+    if anchor is not None:
+        return anchor
+
+    return rule_finding.rule_id
+
+
+def _overridden_findings_by_fingerprint(
+    previous_findings: Iterable[Any],
+) -> dict[str, Any]:
+    overridden_findings: dict[str, Any] = {}
+    for finding in previous_findings:
+        if not _has_override_history(finding):
+            continue
+
+        fingerprint = _fingerprint_for_existing_finding(finding)
+        if fingerprint is None:
+            continue
+
+        overridden_findings[fingerprint] = finding
+    return overridden_findings
+
+
+def _has_override_history(finding: Any) -> bool:
+    return bool(_field(finding, "history", []))
+
+
+def _fingerprint_for_existing_finding(finding: Any) -> str | None:
+    fingerprint = _field(finding, "fingerprint")
+    if fingerprint:
+        return str(fingerprint)
+
+    try:
+        return fingerprint_finding(finding)
+    except (TypeError, ValueError):
+        return None
+
+
+def _copy_override_state(finding: Any, overridden_finding: Any) -> None:
+    status = _field(overridden_finding, "status")
+    if status is not None:
+        _set_field(finding, "status", status)
+
+    severity = _field(overridden_finding, "severity")
+    if severity is not None:
+        _set_field(finding, "severity", severity)
+
+    _replace_history(finding, _field(overridden_finding, "history", []))
+
+
+def _replace_history(finding: Any, source_history: Iterable[Any]) -> None:
+    history_entries = list(source_history)
+    if isinstance(finding, dict):
+        finding["history"] = [
+            _history_entry_mapping(entry)
+            for entry in history_entries
+        ]
+        return
+
+    target_history = _field(finding, "history")
+    if target_history is None:
+        return
+
+    target_history.clear()
+    target_history.extend(_clone_history_entries(history_entries))
+
+
+def _history_entry_mapping(entry: Any) -> dict[str, Any]:
+    if isinstance(entry, dict):
+        return dict(entry)
+    return {
+        "changed_by": _field(entry, "changed_by"),
+        "change_type": _field(entry, "change_type"),
+        "from_value": _field(entry, "from_value"),
+        "to_value": _field(entry, "to_value"),
+        "reason": _field(entry, "reason"),
+        "created_at": _field(entry, "created_at"),
+    }
+
+
+def _clone_history_entries(history_entries: Iterable[Any]) -> list[Any]:
+    from app.models.finding import FindingHistoryEntry
+
+    cloned_entries = []
+    for entry in history_entries:
+        kwargs = {
+            "changed_by": _field(entry, "changed_by"),
+            "change_type": _field(entry, "change_type"),
+            "from_value": _field(entry, "from_value"),
+            "to_value": _field(entry, "to_value"),
+            "reason": _field(entry, "reason"),
+        }
+        created_at = _field(entry, "created_at")
+        if created_at is not None:
+            kwargs["created_at"] = created_at
+        cloned_entries.append(FindingHistoryEntry(**kwargs))
+    return cloned_entries
+
+
+def _set_field(value: Any, name: str, field_value: Any) -> None:
     if isinstance(value, dict):
-        return value.get(name)
-    return getattr(value, name, None)
+        value[name] = field_value
+        return
+    setattr(value, name, field_value)
+
+
+def _field(value: Any, name: str, default: Any = None) -> Any:
+    if isinstance(value, dict):
+        return value.get(name, default)
+    return getattr(value, name, default)
 
 
 __all__ = [
@@ -322,6 +549,7 @@ __all__ = [
     "ScannedFinding",
     "create_findings",
     "orchestrate_scan",
+    "preserve_overridden_findings",
     "scan_analysis",
     "scan_changed_files",
 ]

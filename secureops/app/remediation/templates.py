@@ -85,7 +85,10 @@ _TEMPLATES: tuple[RemediationTemplate, ...] = (
         language="javascript",
         rule_ids=(
             "javascript.dom.inner_html",
+            "javascript.dom.outer_html",
             "javascript.dom.insert_adjacent_html",
+            "javascript.dom.document_write",
+            "javascript.dom.document_writeln",
         ),
         categories=("CWE-79",),
         impact=(
@@ -99,16 +102,102 @@ _TEMPLATES: tuple[RemediationTemplate, ...] = (
             "content, which can execute script."
         ),
         correction_template=(
-            "Use textContent or DOM node creation APIs for untrusted values. "
-            "If limited markup is required, sanitize with an approved HTML "
-            "sanitizer before assigning to {sink}."
+            "Replace {sink} with textContent or DOM node creation APIs for "
+            "untrusted values. If limited markup is required, sanitize with "
+            "an approved HTML sanitizer before sending content to an "
+            "HTML-parsing sink."
         ),
         safe_example_template=(
             "const value = String({user_input});\n"
-            "results.replaceChildren();\n"
-            "const item = document.createElement(\"strong\");\n"
+            "const item = document.createElement(\"span\");\n"
             "item.textContent = value;\n"
-            "results.appendChild(item);"
+            "container.replaceChildren(item);"
+        ),
+    ),
+    RemediationTemplate(
+        template_id="python-unsafe-yaml-load",
+        language="python",
+        rule_ids=("python.yaml.unsafe_load",),
+        categories=("CWE-502",),
+        impact=(
+            "Unsafe deserialization can instantiate attacker-controlled data "
+            "structures or objects and may lead to code execution or data "
+            "tampering."
+        ),
+        confidence=RecommendationConfidence.HIGH,
+        cause_template=(
+            "Untrusted YAML input {user_input} is passed into {sink} at "
+            "{location}. A general-purpose YAML loader can construct Python "
+            "objects from attacker-controlled tags instead of parsing the "
+            "document as plain data."
+        ),
+        correction_template=(
+            "Replace {sink} with yaml.safe_load for untrusted YAML input. If "
+            "custom YAML types are required, register only the specific "
+            "constructors the application accepts and reject every other tag."
+        ),
+        safe_example_template=(
+            "import yaml\n\n"
+            "parsed = yaml.safe_load({user_input})"
+        ),
+    ),
+    RemediationTemplate(
+        template_id="javascript-dynamic-code-execution",
+        language="javascript",
+        rule_ids=(
+            "javascript.eval",
+            "javascript.function_constructor",
+        ),
+        categories=("CWE-95",),
+        impact=(
+            "Dynamic code execution can let attacker-controlled text run as "
+            "application code in the user's browser or server runtime."
+        ),
+        confidence=RecommendationConfidence.HIGH,
+        cause_template=(
+            "Untrusted input {user_input} reaches {sink} at {location}. "
+            "Dynamic code execution treats attacker-controlled strings as "
+            "program source, so injected syntax can run with application "
+            "privileges."
+        ),
+        correction_template=(
+            "Remove {sink} for untrusted data. Dispatch only to explicit "
+            "allowlisted functions, validate the selected action, and keep "
+            "request-controlled values as data rather than executable code."
+        ),
+        safe_example_template=(
+            "const handlers = {{ refresh: refreshDashboard }};\n"
+            "const handler = handlers[String({user_input})];\n"
+            "if (!handler) throw new Error(\"Unsupported action\");\n"
+            "handler();"
+        ),
+    ),
+    RemediationTemplate(
+        template_id="javascript-string-timer-execution",
+        language="javascript",
+        rule_ids=("javascript.timer.string_execution",),
+        categories=("CWE-95",),
+        impact=(
+            "String-based timer execution can run attacker-controlled code "
+            "after the timer fires, giving injected script access to the "
+            "current page or runtime context."
+        ),
+        confidence=RecommendationConfidence.HIGH,
+        cause_template=(
+            "Untrusted input {user_input} is used as the code argument for "
+            "{sink} at {location}. Passing a string to a timer evaluates that "
+            "string as code instead of calling a fixed callback."
+        ),
+        correction_template=(
+            "Pass a function reference or closure to {sink}, validate any "
+            "user-selected operation against an allowlist, and keep the timer "
+            "delay separate from untrusted action data."
+        ),
+        safe_example_template=(
+            "const handlers = {{ refresh: refreshDashboard }};\n"
+            "const handler = handlers[String({user_input})];\n"
+            "if (!handler) throw new Error(\"Unsupported action\");\n"
+            "setTimeout(() => handler(), delayMs);"
         ),
     ),
 )

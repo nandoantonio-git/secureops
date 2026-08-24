@@ -52,6 +52,24 @@ _RULE_GUIDANCE: dict[str, _DeterministicGuidance] = {
         ),
         safe_example="import yaml\n\nparsed = yaml.safe_load({user_input})",
     ),
+    "javascript.dom.inner_html": _DeterministicGuidance(
+        impact=(
+            "DOM XSS can let attacker-controlled data execute script in the "
+            "user's browser and act with that user's session."
+        ),
+        recommended_correction=(
+            "Replace {sink} with textContent or DOM node creation APIs for "
+            "untrusted values. If limited markup is required, sanitize with "
+            "an approved HTML sanitizer before sending content to an "
+            "HTML-parsing sink."
+        ),
+        safe_example=(
+            "const value = String({user_input});\n"
+            "const item = document.createElement(\"span\");\n"
+            "item.textContent = value;\n"
+            "container.replaceChildren(item);"
+        ),
+    ),
     "javascript.eval": _DeterministicGuidance(
         impact=(
             "Dynamic code execution can let attacker-controlled text run as "
@@ -69,10 +87,41 @@ _RULE_GUIDANCE: dict[str, _DeterministicGuidance] = {
             "handler();"
         ),
     ),
+    "javascript.timer.string_execution": _DeterministicGuidance(
+        impact=(
+            "String-based timer execution can run attacker-controlled code "
+            "after the timer fires, giving injected script access to the "
+            "current page or runtime context."
+        ),
+        recommended_correction=(
+            "Pass a function reference or closure to {sink}, validate any "
+            "user-selected operation against an allowlist, and keep the timer "
+            "delay separate from untrusted action data."
+        ),
+        safe_example=(
+            "const handlers = {{ refresh: refreshDashboard }};\n"
+            "const handler = handlers[String({user_input})];\n"
+            "if (!handler) throw new Error(\"Unsupported action\");\n"
+            "setTimeout(() => handler(), delayMs);"
+        ),
+    ),
 }
+
+for _dom_rule_id in (
+    "javascript.dom.outer_html",
+    "javascript.dom.insert_adjacent_html",
+    "javascript.dom.document_write",
+    "javascript.dom.document_writeln",
+):
+    _RULE_GUIDANCE[_dom_rule_id] = _RULE_GUIDANCE["javascript.dom.inner_html"]
+
+_RULE_GUIDANCE["javascript.function_constructor"] = _RULE_GUIDANCE[
+    "javascript.eval"
+]
 
 _CATEGORY_GUIDANCE: dict[str, _DeterministicGuidance] = {
     "cwe-502": _RULE_GUIDANCE["python.yaml.unsafe_load"],
+    "cwe-79": _RULE_GUIDANCE["javascript.dom.inner_html"],
     "cwe-94": _RULE_GUIDANCE["javascript.eval"],
     "cwe-95": _RULE_GUIDANCE["javascript.eval"],
 }

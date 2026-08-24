@@ -6,7 +6,17 @@ from datetime import datetime, timezone
 from typing import Optional
 from uuid import uuid4
 
-from sqlalchemy import Boolean, DateTime, Enum, ForeignKey, Integer, JSON, String, Text
+from sqlalchemy import (
+    Boolean,
+    DateTime,
+    Enum,
+    ForeignKey,
+    Integer,
+    JSON,
+    String,
+    Text,
+    UniqueConstraint,
+)
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.connection import Base
@@ -152,6 +162,13 @@ class LanguageCoverageResult(Base):
     """Per-analysis language coverage result."""
 
     __tablename__ = "language_coverage_results"
+    __table_args__ = (
+        UniqueConstraint(
+            "analysis_id",
+            "language",
+            name="uq_language_coverage_results_analysis_language",
+        ),
+    )
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_new_uuid)
     analysis_id: Mapped[str] = mapped_column(

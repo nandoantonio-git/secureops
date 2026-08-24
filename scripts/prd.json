@@ -513,7 +513,7 @@
         "python -m py_compile secureops/app/engine/taint.py passa sem erros",
         "pytest secureops/tests/unit/test_taint.py"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T043",
@@ -526,7 +526,7 @@
         "python -m py_compile secureops/app/engine/rules/secondary.py passa sem erros",
         "pytest secureops/tests/unit/test_secondary_rules.py"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T044",
@@ -538,7 +538,7 @@
       "acceptanceCriteria": [
         "python -m py_compile secureops/app/engine/scan.py passa sem erros"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T045",
@@ -552,7 +552,7 @@
         "python -m py_compile secureops/app/api/analyses.py passa sem erros",
         "pytest secureops/tests/integration/test_language_coverage.py"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T046",
@@ -564,7 +564,7 @@
       "acceptanceCriteria": [
         "python -m py_compile secureops/app/github/comments.py passa sem erros"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T047",
@@ -576,7 +576,7 @@
       "acceptanceCriteria": [
         "Manual review: task content matches description (no automated file-syntax gate applies)"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T048",
@@ -588,7 +588,7 @@
       "acceptanceCriteria": [
         "python -m py_compile secureops/tests/unit/test_gate_eligibility.py passa sem erros"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T049",
@@ -600,7 +600,7 @@
       "acceptanceCriteria": [
         "python -m py_compile secureops/tests/integration/test_gate_api.py passa sem erros"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T050",
@@ -612,7 +612,7 @@
       "acceptanceCriteria": [
         "python -m py_compile secureops/tests/validation/test_restricted_blocking.py passa sem erros"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T051",
@@ -624,7 +624,7 @@
       "acceptanceCriteria": [
         "python -m py_compile secureops/tests/validation/test_clean_non_blocking.py passa sem erros"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T052",
@@ -636,7 +636,7 @@
       "acceptanceCriteria": [
         "python -m py_compile secureops/app/engine/scan.py passa sem erros"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T053",
@@ -650,7 +650,7 @@
         "pytest secureops/tests/unit/test_gate_eligibility.py",
         "pytest secureops/tests/integration/test_gate_api.py"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T054",
@@ -662,7 +662,7 @@
       "acceptanceCriteria": [
         "python -m py_compile secureops/app/github/status.py passa sem erros"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T055",
@@ -675,7 +675,7 @@
         "python -m py_compile secureops/app/api/analyses.py passa sem erros",
         "python -m py_compile secureops/app/api/gate.py passa sem erros"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T056",
@@ -687,7 +687,7 @@
       "acceptanceCriteria": [
         "Manual review: task content matches description (no automated file-syntax gate applies)"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T057",
@@ -699,7 +699,7 @@
       "acceptanceCriteria": [
         "python -m py_compile secureops/tests/unit/test_finding_lifecycle.py passa sem erros"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T058",
@@ -711,7 +711,7 @@
       "acceptanceCriteria": [
         "python -m py_compile secureops/tests/integration/test_finding_override_api.py passa sem erros"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T059",
@@ -723,7 +723,7 @@
       "acceptanceCriteria": [
         "python -m py_compile secureops/tests/validation/test_manual_override_history.py passa sem erros"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T060",
@@ -736,7 +736,7 @@
         "python -m py_compile secureops/app/models/finding.py passa sem erros",
         "pytest secureops/tests/unit/test_finding_lifecycle.py"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T061",
@@ -749,7 +749,7 @@
         "python -m py_compile secureops/app/api/findings.py passa sem erros",
         "pytest secureops/tests/integration/test_finding_override_api.py"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T062",
@@ -762,7 +762,7 @@
         "python -m py_compile secureops/app/engine/fingerprint.py passa sem erros",
         "python -m py_compile secureops/app/engine/scan.py passa sem erros"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T063",
@@ -774,7 +774,7 @@
       "acceptanceCriteria": [
         "python -m py_compile secureops/app/api/findings.py passa sem erros"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T064",
@@ -786,7 +786,7 @@
       "acceptanceCriteria": [
         "Manual review: task content matches description (no automated file-syntax gate applies)"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T065",
@@ -798,7 +798,7 @@
       "acceptanceCriteria": [
         "Manual review: task content matches description (no automated file-syntax gate applies)"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T066",
@@ -810,7 +810,7 @@
       "acceptanceCriteria": [
         "Manual review: task content matches description (no automated file-syntax gate applies)"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T067",
@@ -822,7 +822,7 @@
       "acceptanceCriteria": [
         "pytest secureops/tests"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T068",
@@ -834,7 +834,7 @@
       "acceptanceCriteria": [
         "pytest secureops/tests/validation"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T069",
@@ -846,7 +846,7 @@
       "acceptanceCriteria": [
         "Manual review: task content matches description (no automated file-syntax gate applies)"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "T070",
@@ -858,7 +858,7 @@
       "acceptanceCriteria": [
         "Manual review: task content matches description (no automated file-syntax gate applies)"
       ],
-      "passes": false
+      "passes": true
     }
   ]
 }

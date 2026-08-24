@@ -1,6 +1,7 @@
 """Unit tests for reviewed remediation template selection."""
 
 from app.models.enums import RecommendationConfidence, RecommendationSource
+from app.remediation import templates
 from app.remediation.templates import (
     RemediationTemplateContext,
     render_template,
@@ -88,6 +89,83 @@ def test_javascript_dom_xss_template_uses_safe_dom_update() -> None:
     assert "q" in _field(recommendation, "cause")
     assert "textContent" in _field(recommendation, "recommended_correction")
     assert "textContent" in _field(recommendation, "safe_example")
+
+
+def test_all_deterministic_rule_ids_have_actionable_reviewed_templates() -> None:
+    expected = {
+        "python.subprocess.shell_true": ("CWE-78", "python", "subprocess.run"),
+        "python.os.system": ("CWE-78", "python", "os.system"),
+        "python.yaml.unsafe_load": ("CWE-502", "python", "yaml.load"),
+        "javascript.dom.inner_html": ("CWE-79", "javascript", "innerHTML"),
+        "javascript.dom.outer_html": ("CWE-79", "javascript", "outerHTML"),
+        "javascript.dom.insert_adjacent_html": (
+            "CWE-79",
+            "javascript",
+            "insertAdjacentHTML",
+        ),
+        "javascript.dom.document_write": (
+            "CWE-79",
+            "javascript",
+            "document.write",
+        ),
+        "javascript.dom.document_writeln": (
+            "CWE-79",
+            "javascript",
+            "document.writeln",
+        ),
+        "javascript.eval": ("CWE-95", "javascript", "eval"),
+        "javascript.function_constructor": ("CWE-95", "javascript", "Function"),
+        "javascript.timer.string_execution": (
+            "CWE-95",
+            "javascript",
+            "setTimeout",
+        ),
+    }
+
+    reviewed_rule_ids = {
+        rule_id
+        for template in templates.reviewed_templates()
+        for rule_id in _field(template, "rule_ids")
+    }
+    assert set(expected) <= reviewed_rule_ids
+
+    for rule_id, (category, language, sink) in expected.items():
+        template = select_template(
+            rule_id=rule_id,
+            category=category,
+            language=language,
+        )
+        assert template is not None
+        recommendation = render_template(
+            template,
+            RemediationTemplateContext(
+                file_path=(
+                    "app/example.py"
+                    if language == "python"
+                    else "static/app.js"
+                ),
+                line_start=12,
+                language=language,
+                evidence=f"{sink}(user_input)",
+                sink=sink,
+                user_input="user_input",
+            ),
+        )
+
+        assert _field(recommendation, "generation_source") == (
+            RecommendationSource.REVIEWED_TEMPLATE
+        )
+        assert _field(recommendation, "confidence") == RecommendationConfidence.HIGH
+        for field in (
+            "cause",
+            "evidence",
+            "impact",
+            "recommended_correction",
+            "safe_example",
+        ):
+            value = _field(recommendation, field)
+            assert isinstance(value, str)
+            assert value.strip()
 
 
 def test_unknown_pattern_has_no_reviewed_template() -> None:

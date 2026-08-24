@@ -121,6 +121,19 @@ def fingerprint_finding(
 generate_finding_fingerprint = build_finding_fingerprint
 
 
+def normalize_finding_anchor(*parts: Any) -> str | None:
+    """Return a normalized semantic anchor from non-empty identity parts."""
+
+    normalized_parts = [
+        normalized
+        for part in parts
+        if (normalized := _normalize_optional(part)) is not None
+    ]
+    if not normalized_parts:
+        return None
+    return ":".join(normalized_parts)
+
+
 def _identity_anchor(
     *,
     stable_anchor: str | None,
@@ -226,4 +239,5 @@ __all__ = [
     "fingerprint_finding",
     "fingerprint_input",
     "generate_finding_fingerprint",
+    "normalize_finding_anchor",
 ]

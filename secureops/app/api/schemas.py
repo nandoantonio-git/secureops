@@ -14,6 +14,8 @@ from app.models.enums import (
     FindingStatus,
     GateDecisionStatus,
     GateMode,
+    LanguageCoverageLevel,
+    LanguageCoverageRole,
     RecommendationConfidence,
     RecommendationSource,
     Severity,
@@ -46,6 +48,27 @@ class CreateAnalysisRequest(ApiSchema):
     changed_files: list[ChangedFile] = Field(min_length=1)
 
 
+class LanguageCoverageProfile(ApiSchema):
+    """Declared analysis depth for one supported language."""
+
+    language: str
+    role: LanguageCoverageRole
+    coverage_level: LanguageCoverageLevel
+    supports_data_flow: bool
+    supported_rule_ids: list[str]
+    limitations: list[str] = Field(default_factory=list)
+
+
+class LanguageCoverageResult(ApiSchema):
+    """Coverage actually applied to one language in an analysis."""
+
+    language: str
+    files_seen: int = Field(ge=0)
+    files_analyzed: int = Field(ge=0)
+    rules_applied: int = Field(ge=0)
+    limitations: list[str] = Field(default_factory=list)
+
+
 class PullRequestAnalysis(ApiSchema):
     """Analysis state and summary returned by analysis endpoints."""
 
@@ -60,6 +83,12 @@ class PullRequestAnalysis(ApiSchema):
     failure_reason: str | None = None
     started_at: datetime | None = None
     completed_at: datetime | None = None
+    language_coverage_profiles: list[LanguageCoverageProfile] = Field(
+        default_factory=list,
+    )
+    language_coverage_results: list[LanguageCoverageResult] = Field(
+        default_factory=list,
+    )
 
 
 class RemediationRecommendation(ApiSchema):
@@ -143,6 +172,8 @@ __all__ = [
     "Finding",
     "FindingHistoryEntry",
     "GateDecision",
+    "LanguageCoverageProfile",
+    "LanguageCoverageResult",
     "OverrideFindingRequest",
     "PullRequestAnalysis",
     "RemediationRecommendation",
