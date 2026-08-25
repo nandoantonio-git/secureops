@@ -1,6 +1,10 @@
 # macOS
 .DS_Store
 
+# Python (secureops/ has its own; this covers root-level scripts/)
+__pycache__/
+*.py[cod]
+
 # Personal/local-only
 .devcontainer/
 CLAUDE.md

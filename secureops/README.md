@@ -181,8 +181,8 @@ The manual dry-run evidence to capture for a checkpoint review is:
   fixture payloads.
 - `GET /analyses/{analysisId}/findings` returns structured remediation fields:
   `cause`, `evidence`, `impact`, `recommended_correction`, and `safe_example`.
-- `GET /analyses/{analysisId}/feedback` returns the redacted PR comment body
-  that would be posted to GitHub.
+- `GET /analyses/{analysisId}/pr-feedback` returns the redacted PR comment
+  body that would be posted to GitHub.
 - `GET /analyses/{analysisId}/gate-decision` returns `advisory_only` in default
   advisory mode, `blocked` only for the restricted critical fixture, and
   `passed` for clean-code restricted runs.
@@ -191,10 +191,13 @@ The manual dry-run evidence to capture for a checkpoint review is:
 
 Local verification blockers remaining before a live release dry run:
 
-- This workspace has no live GitHub Pull Request, GitHub Actions runner
+- ~~This workspace has no live GitHub Pull Request, GitHub Actions runner
   context, or publishing credentials, so PR comment/status publication was not
-  exercised against GitHub. The local substitute is the fixture harness plus
-  generated feedback, gate-decision, commit-status, and check-run payloads.
+  exercised against GitHub.~~ Resolved: `.github/workflows/secureops-gate.yml`
+  runs a real gate against every PR on this repo, and `app/github/publisher.py`
+  publishes the feedback comment and commit status through the GitHub API
+  (best-effort; no-op without a token or PR number, never fails the analysis
+  response) — see the root `README.md`'s CI section.
 - The repository quickstart names Python 3.12 as the target local prerequisite,
   but this workspace only exposes `Python 3.9.2`. The validation suite passed
   here, but strict Python 3.12 parity should be rerun in a matching environment.

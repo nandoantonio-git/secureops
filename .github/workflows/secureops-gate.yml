@@ -1,0 +1,131 @@
+name: SecureOps gate
+
+# Dogfoods the product: every PR against this repo is scanned by SecureOps
+# itself. Builds the same image documented in the root README's "Docker
+# Compose" section, runs it against a real Postgres, POSTs the PR's changed
+# files to /analyses, and fails the check when the gate decision comes back
+# blocked. On same-repo PRs it also posts the generated feedback comment and
+# commit status through the app's own publisher (app/github/publisher.py) --
+# GITHUB_TOKEN has no write access on PRs from forks, so that step is a
+# best-effort no-op there (see publisher.py's fail-soft design).
+on:
+  pull_request:
+
+permissions:
+  contents: read
+  pull-requests: write
+  statuses: write
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: secureops
+          POSTGRES_PASSWORD: secureops
+          POSTGRES_DB: secureops
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U secureops -d secureops"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Build the SecureOps API image
+        run: docker build -t secureops-gate-api ./secureops
+
+      - name: Start the API
+        run: |
+          docker run -d --name secureops-gate-api \
+            --network host \
+            -e DATABASE_URL="postgresql+psycopg://secureops:secureops@localhost:5432/secureops" \
+            -e GATE_MODE=advisory \
+            -e SECONDARY_LANGUAGE=javascript \
+            -e OLLAMA_FALLBACK_ENABLED=true \
+            -e GITHUB_TOKEN="${{ secrets.GITHUB_TOKEN }}" \
+            -v "${GITHUB_WORKSPACE}:/workspace:ro" \
+            secureops-gate-api
+
+      - name: Wait for the API to be healthy
+        run: |
+          for _ in $(seq 1 30); do
+            if curl -sf http://localhost:8000/health >/dev/null; then
+              echo "API is up"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "API never became healthy" >&2
+          docker logs secureops-gate-api >&2
+          exit 1
+
+      - name: Build the analysis payload from the PR diff
+        run: |
+          python3 scripts/ci_build_analysis_payload.py \
+            --repository "${{ github.repository }}" \
+            --pull-request-number "${{ github.event.pull_request.number }}" \
+            --commit-sha "${{ github.event.pull_request.head.sha }}" \
+            --mode blocking_enabled \
+            --base-sha "${{ github.event.pull_request.base.sha }}" \
+            --head-sha "${{ github.event.pull_request.head.sha }}" \
+            --workspace-mount /workspace \
+            > analysis-payload.json
+
+      - name: Run the SecureOps gate
+        run: |
+          changed_files=$(python3 -c "import json; print(len(json.load(open('analysis-payload.json'))['changed_files']))")
+          if [ "$changed_files" -eq 0 ]; then
+            echo "No Python or JavaScript files changed in this PR -- nothing for SecureOps to analyze."
+            exit 0
+          fi
+
+          http_status=$(curl -s -o analysis-response.json -w "%{http_code}" \
+            -X POST http://localhost:8000/analyses \
+            -H "Content-Type: application/json" \
+            -d @analysis-payload.json)
+          if [ "$http_status" != "202" ]; then
+            echo "POST /analyses returned $http_status:" >&2
+            cat analysis-response.json >&2
+            exit 1
+          fi
+
+          analysis_id=$(python3 -c "import json; print(json.load(open('analysis-response.json'))['id'])")
+          echo "Analysis: $analysis_id"
+
+          curl -s "http://localhost:8000/analyses/$analysis_id/gate-decision" -o gate-decision.json
+          python3 - <<'PYEOF'
+          import json
+          import sys
+
+          with open("gate-decision.json") as handle:
+              decision = json.load(handle)
+
+          print(f"Gate decision: {decision['decision']}")
+          for reason in decision.get("reasons", []):
+              print(f"  - {reason}")
+
+          if decision["decision"] == "blocked":
+              print(
+                  "SecureOps blocked this PR: restricted critical findings with "
+                  "multiple deterministic signals were found. See the PR comment "
+                  "SecureOps posted for cause/evidence/impact/correction per finding.",
+                  file=sys.stderr,
+              )
+              sys.exit(1)
+          PYEOF
+
+      - name: Show API logs on failure
+        if: failure()
+        run: docker logs secureops-gate-api
+
+      - name: Stop the API
+        if: always()
+        run: docker rm -f secureops-gate-api

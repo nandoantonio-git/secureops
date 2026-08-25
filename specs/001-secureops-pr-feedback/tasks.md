@@ -313,4 +313,4 @@ With four to five contributors:
 ## Phase 8: Convergence
 
 - [x] T071 [CRITICAL] Implement an authenticated, mock-testable GitHub PR publishing path that posts the generated redacted feedback comment and commit status/check output directly into the Pull Request context per FR-001, FR-006, and plan: critical MVP flow (missing)
-- [ ] T072 [HIGH] Add a GitHub Actions pull_request/dry-run workflow or fixture-backed CI entrypoint that dispatches SecureOps analysis and surfaces the generated comment/status evidence per plan: GitHub Actions dispatch and PR workflow validation (missing)
+- [x] T072 [HIGH] Add a GitHub Actions pull_request/dry-run workflow or fixture-backed CI entrypoint that dispatches SecureOps analysis and surfaces the generated comment/status evidence per plan: GitHub Actions dispatch and PR workflow validation (missing)

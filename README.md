@@ -228,11 +228,23 @@ This project runs under a versioned constitution
    AI-assisted feature needs a deterministic/template fallback.
 5. Academic/checkpoint traceability must not distort the product.
 
+## CI: the SecureOps gate on its own PRs
+
+`.github/workflows/secureops-gate.yml` dogfoods the product: every PR
+against this repo builds the `secureops/Dockerfile` image, runs it against a
+real Postgres service container, and POSTs the PR's changed files (filtered
+to `.py`/`.js`/`.jsx`/`.mjs`/`.cjs`, via `scripts/ci_build_analysis_payload.py`)
+to its own `/analyses` endpoint in `blocking_enabled` mode. A `blocked` gate
+decision fails the check. On same-repo PRs, the app's own publisher
+(`app/github/publisher.py`, [T071](specs/001-secureops-pr-feedback/tasks.md))
+also posts the generated feedback comment and commit status —
+`GITHUB_TOKEN` has no write access on PRs from forks, so that part is a
+best-effort no-op there rather than a failure.
+
 ## Known limitations
 
-- No live GitHub Pull Request / Actions integration has been exercised from
-  this workspace — validated via the fixture harness plus generated
-  feedback/gate-decision payloads instead.
+- CI publishing (comment + commit status) only works on same-repo PRs, not
+  forks — see the CI section above.
 - The quickstart targets Python 3.12; local validation here has run on
   Python 3.9.2.
 - JavaScript coverage is intentionally minimal (one deterministic rule, no
