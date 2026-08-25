@@ -316,3 +316,4 @@ With four to five contributors:
 - [x] T072 [HIGH] Add a GitHub Actions pull_request/dry-run workflow or fixture-backed CI entrypoint that dispatches SecureOps analysis and surfaces the generated comment/status evidence per plan: GitHub Actions dispatch and PR workflow validation (missing)
 - [x] T073 [MEDIUM] Implement real AI-assisted severity re-classification via Ollama (suggested_severity + rationale on the remediation recommendation, surfaced in the API and PR comment, accepted only through the existing US4 override mechanism -- never auto-applied, never a blocking-eligible signal) per plan: AI innovation and Constitution Principle II/V
 - [x] T074 [LOW] Add C4 context and container diagrams matching docker-compose.yml/secureops-gate.yml exactly, for architecture defense evidence in `docs/architecture/`
+- [x] T075 [LOW] Write a checkpoint/defense demo script with verified commands and scope-limitation talking points in `docs/demo-script.md`

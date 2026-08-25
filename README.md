@@ -61,7 +61,9 @@ time.
 For the system/container-level view (what talks to what, and why each
 external dependency is designed to degrade rather than fail), see
 [docs/architecture/c4-context.md](docs/architecture/c4-context.md) and
-[docs/architecture/c4-container.md](docs/architecture/c4-container.md).
+[docs/architecture/c4-container.md](docs/architecture/c4-container.md). For a
+walkthrough script (checkpoint/defense demo), see
+[docs/demo-script.md](docs/demo-script.md).
 
 ## Key properties
 
