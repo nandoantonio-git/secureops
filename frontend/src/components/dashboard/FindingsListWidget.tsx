@@ -226,6 +226,7 @@ function FindingRow({
           // default with zero extra typing while still supporting a real one.
           <div className="finding-status-editor">
             <select
+              aria-label={`Novo status para ${finding.rule_id}`}
               value={nextStatus}
               onChange={(event) =>
                 setNextStatus(event.target.value as FindingStatus)
@@ -244,7 +245,7 @@ function FindingRow({
               aria-label="Motivo da mudança"
             />
             <button type="button" onClick={submit} disabled={submitting}>
-              Salvar
+              {submitting ? 'Salvando…' : 'Salvar'}
             </button>
             <button
               type="button"
@@ -253,12 +254,13 @@ function FindingRow({
             >
               Cancelar
             </button>
-            {error ? <span className="finding-status-error">{error}</span> : null}
+            {error ? <span className="finding-status-error" role="alert">{error}</span> : null}
           </div>
         ) : (
           <button
             type="button"
             className="status-badge-button"
+            aria-label={`Alterar status de ${finding.rule_id}`}
             onClick={() => setEditing(true)}
           >
             <StatusBadge status={finding.status} />

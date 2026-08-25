@@ -21,6 +21,21 @@ export const colors = {
   resolvedAccepted: '#16A34A',
 } as const;
 
+/**
+ * Brand chrome only (masthead, focus rings, links, controls) -- never used
+ * for severity semantics, which stay exclusively on the 5 colors above so
+ * "what color means what" never has two answers.
+ */
+export const brand = {
+  ink: '#14171F',
+  paper: '#F6F7FB',
+  surface: '#FFFFFF',
+  line: '#E4E7F0',
+  textSecondary: '#565C6D',
+  accent: '#2A3EB1',
+  accentTint: '#EEF0FC',
+} as const;
+
 export const colorTints = {
   critical: '#FEE2E2',
   high: '#FFEDD5',
@@ -56,7 +71,8 @@ export const typography = {
     letterSpacing: '0.01em',
     lineHeight: 1.4,
   },
-  fontFamily: 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
+  fontFamily: '"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
+  fontFamilyMono: '"IBM Plex Mono", ui-monospace, Consolas, monospace',
 } as const;
 
 export const spacing = {

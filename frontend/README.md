@@ -1,32 +1,31 @@
-# React + TypeScript + Vite
+# SecureOps Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+React and TypeScript dashboard for the SecureOps analytics API. It shows severity distribution, weekly trends, critical files, and a paginated findings list with reviewer status overrides.
 
-Currently, two official plugins are available:
+## Local setup
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+npm ci
+npm run dev
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+The tracked `.env.development` provides local defaults. Use the ignored `.env.development.local` for machine-specific overrides:
+
+```dotenv
+VITE_API_BASE_URL=http://localhost:8000
+VITE_DASHBOARD_REPOSITORY=secureops/example-service
+VITE_DASHBOARD_GATE_MODE=advisory
+```
+
+`VITE_DASHBOARD_REPOSITORY` is required. `VITE_DASHBOARD_GATE_MODE` must mirror the backend setting because the API does not currently expose gate mode.
+
+## Quality checks
+
+```bash
+npm run lint       # Oxlint checks
+npm test           # Vitest component tests
+npm run build      # TypeScript check and production bundle
+npm run preview    # Serve the production bundle locally
+```
+
+Keep API contracts in `src/api/`, reusable UI in `src/components/shared/`, dashboard widgets in `src/components/dashboard/`, and design constants in `src/design/tokens.ts`.
