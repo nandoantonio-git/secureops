@@ -109,6 +109,42 @@ Expected evidence from a passing run:
 This is the intended US4 governance scope for this phase: minimal visible
 manual override history without full RBAC or a full audit-log subsystem.
 
+## AI-Assisted Severity Re-classification
+
+Every remediation request to Ollama also asks the model to assess whether
+the deterministic rule's severity looks right for that specific occurrence
+(`app/remediation/ollama_client.py::_build_prompt`), given the same
+cause/evidence/impact context it already receives. When it disagrees, the
+response carries an optional `suggested_severity` and one-sentence
+`severity_rationale`, surfaced on the finding's `remediation` object in
+`GET /analyses/{analysisId}/findings` and rendered as a clearly-labeled
+"AI severity suggestion (not applied automatically)" block in the PR
+comment.
+
+Constitution-critical: this is a suggestion, never an authority.
+- It never changes `finding.severity` itself, and it carries no detection
+  signal weight of its own — blocking eligibility in restricted mode still
+  requires the same ≥2 independent *deterministic* signals it always has
+  (`app/api/gate.py::is_finding_blocking_eligible`); `ai_assisted_classification`
+  was never one of those and still isn't.
+- A reviewer accepts it the same way they'd make any other manual severity
+  call: `POST /findings/{findingId}/override` with
+  `change_type: severity_override` and `to_value` set to the suggested
+  severity. No new endpoint exists for this on purpose — it reuses US4's
+  override/history mechanism rather than adding a second governance path.
+- When the model agrees with the rule, returns an unparseable value, or
+  Ollama is unavailable/falls back to a reviewed template, the finding's
+  remediation simply has no suggestion (`suggested_severity: null`) — this
+  is the normal case, not a failure. See
+  `tests/unit/test_ollama_severity_suggestion.py` and
+  `tests/unit/test_pr_feedback_severity_suggestion.py`.
+
+Not yet persisted to Postgres: `suggested_severity`/`severity_rationale`
+live on the in-memory finding cache and the rendered PR comment for the
+life of an analysis, but the `RemediationRecommendation` table has no
+column for them yet. Adding that (plus an Alembic migration) is future
+work if the suggestion needs to survive a server restart.
+
 ## Dashboard (Read-Only Analytics)
 
 `app/api/dashboard.py` exposes read-only analytics endpoints, backed by the

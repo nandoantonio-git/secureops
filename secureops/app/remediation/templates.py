@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from app.models.enums import RecommendationConfidence, RecommendationSource
+from app.models.enums import RecommendationConfidence, RecommendationSource, Severity
 
 
 @dataclass(frozen=True)
@@ -46,6 +46,13 @@ class RemediationRecommendation:
     generation_source: RecommendationSource
     template_id: str | None
     confidence: RecommendationConfidence
+    # AI-suggested severity re-classification -- always a suggestion, never
+    # applied automatically. A reviewer accepts it through the existing
+    # POST /findings/{id}/override (change_type=severity_override), same as
+    # any other manual severity change. Deterministic/template recommendations
+    # never populate this: only a real Ollama classification can.
+    suggested_severity: Severity | None = None
+    severity_rationale: str | None = None
 
 
 _TEMPLATES: tuple[RemediationTemplate, ...] = (

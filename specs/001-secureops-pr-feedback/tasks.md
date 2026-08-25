@@ -314,3 +314,4 @@ With four to five contributors:
 
 - [x] T071 [CRITICAL] Implement an authenticated, mock-testable GitHub PR publishing path that posts the generated redacted feedback comment and commit status/check output directly into the Pull Request context per FR-001, FR-006, and plan: critical MVP flow (missing)
 - [x] T072 [HIGH] Add a GitHub Actions pull_request/dry-run workflow or fixture-backed CI entrypoint that dispatches SecureOps analysis and surfaces the generated comment/status evidence per plan: GitHub Actions dispatch and PR workflow validation (missing)
+- [x] T073 [MEDIUM] Implement real AI-assisted severity re-classification via Ollama (suggested_severity + rationale on the remediation recommendation, surfaced in the API and PR comment, accepted only through the existing US4 override mechanism -- never auto-applied, never a blocking-eligible signal) per plan: AI innovation and Constitution Principle II/V

@@ -155,7 +155,34 @@ def format_pr_feedback(
             ],
         )
 
+        suggested_severity = _get(remediation, "suggested_severity")
+        if suggested_severity:
+            lines.extend(_format_severity_suggestion(finding, remediation, severity))
+
     return "\n".join(lines)
+
+
+def _format_severity_suggestion(
+    finding: Any,
+    remediation: Any,
+    current_severity: str,
+) -> list[str]:
+    suggested = _as_text(_get(remediation, "suggested_severity"))
+    rationale = _as_text(_get(remediation, "severity_rationale"), default="")
+    finding_id = _as_text(_get(finding, "id"), default="")
+
+    summary = f"SecureOps' local model suggests `{suggested}` instead of `{current_severity}`"
+    summary = f"{summary}: {rationale}" if rationale else f"{summary}."
+
+    return [
+        "",
+        "**AI severity suggestion (not applied automatically)**",
+        _redact(summary),
+        _redact(
+            f"A reviewer can accept this via `POST /findings/{finding_id}/override` "
+            "with `change_type: severity_override`.",
+        ),
+    ]
 
 
 def redact_sensitive_feedback(value: str) -> str:

@@ -277,6 +277,8 @@ def _serialize_scanned_finding(
             "generation_source": _api_value(recommendation.generation_source),
             "template_id": recommendation.template_id,
             "confidence": _api_value(recommendation.confidence),
+            "suggested_severity": _api_value(recommendation.suggested_severity),
+            "severity_rationale": recommendation.severity_rationale,
         },
         "detection_signals": _serialize_detection_signals(finding),
         "history": [],

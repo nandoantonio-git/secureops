@@ -6,7 +6,7 @@ import json
 from dataclasses import dataclass
 from typing import Any, Mapping, Optional
 
-from app.models.enums import RecommendationConfidence, RecommendationSource
+from app.models.enums import RecommendationConfidence, RecommendationSource, Severity
 from app.remediation.templates import RemediationRecommendation
 
 
@@ -35,6 +35,7 @@ class OllamaRemediationContext:
     file_path: str
     line_start: int
     evidence: str
+    current_severity: str
     sink: Optional[str] = None
     user_input: Optional[str] = None
 
@@ -99,7 +100,10 @@ class OllamaClient:
                 fallback_reason="ollama_invalid_response",
             )
 
-        recommendation = self._recommendation_from_payload(payload)
+        recommendation = self._recommendation_from_payload(
+            payload,
+            current_severity=context.current_severity,
+        )
         if recommendation is None:
             return OllamaClientResult(
                 recommendation=None,
@@ -151,6 +155,8 @@ class OllamaClient:
     def _recommendation_from_payload(
         self,
         payload: Mapping[str, Any],
+        *,
+        current_severity: str,
     ) -> Optional[RemediationRecommendation]:
         body = _extract_response_body(payload)
         if body is None:
@@ -167,6 +173,11 @@ class OllamaClient:
                 return None
             values[field] = value.strip()
 
+        suggested_severity, severity_rationale = _parse_severity_suggestion(
+            body,
+            current_severity=current_severity,
+        )
+
         return RemediationRecommendation(
             cause=values["cause"],
             evidence=values["evidence"],
@@ -176,6 +187,8 @@ class OllamaClient:
             generation_source=RecommendationSource.OLLAMA_CONTEXTUALIZED,
             template_id=None,
             confidence=confidence,
+            suggested_severity=suggested_severity,
+            severity_rationale=severity_rationale,
         )
 
 
@@ -235,6 +248,37 @@ def _confidence_below(
     return _CONFIDENCE_RANK[actual] < _CONFIDENCE_RANK[minimum]
 
 
+def _parse_severity_suggestion(
+    body: Mapping[str, Any],
+    *,
+    current_severity: str,
+) -> tuple[Optional[Severity], Optional[str]]:
+    """Return (suggested_severity, rationale), or (None, None).
+
+    A malformed or missing suggestion is never an error -- this is an
+    optional enrichment on top of an already-valid recommendation, not a
+    required field. Agreement with the deterministic rule's severity (or an
+    unparseable value) also comes back as (None, None): there is nothing for
+    a reviewer to act on either way.
+    """
+
+    raw_value = body.get("suggested_severity")
+    if not isinstance(raw_value, str):
+        return None, None
+
+    normalized = raw_value.strip().lower()
+    suggested = next(
+        (severity for severity in Severity if severity.value == normalized),
+        None,
+    )
+    if suggested is None or suggested.value == current_severity:
+        return None, None
+
+    rationale = body.get("severity_rationale")
+    rationale_text = rationale.strip() if isinstance(rationale, str) else None
+    return suggested, rationale_text or None
+
+
 def _build_prompt(context: OllamaRemediationContext) -> str:
     details = {
         "rule_id": context.rule_id,
@@ -243,6 +287,7 @@ def _build_prompt(context: OllamaRemediationContext) -> str:
         "file_path": context.file_path,
         "line_start": context.line_start,
         "evidence": context.evidence,
+        "current_severity": context.current_severity,
         "sink": context.sink,
         "user_input": context.user_input,
     }
@@ -251,6 +296,14 @@ def _build_prompt(context: OllamaRemediationContext) -> str:
         "Required keys: cause, evidence, impact, recommended_correction, "
         "safe_example, confidence. Confidence must be high, medium, or low. "
         "Do not invent evidence beyond the finding details.\n"
+        "Also assess whether current_severity looks right for this specific "
+        "occurrence, given the evidence and where the tainted value actually "
+        "goes. Add two optional keys: suggested_severity (one of critical, "
+        "high, medium, low, info -- omit or repeat current_severity if you "
+        "agree with it) and severity_rationale (one sentence, only when "
+        "suggested_severity differs from current_severity). This is always a "
+        "suggestion for a human reviewer, never applied automatically -- do "
+        "not let it change cause/evidence/impact/recommended_correction.\n"
         f"Finding: {json.dumps(details, sort_keys=True)}"
     )
 

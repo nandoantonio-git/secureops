@@ -102,6 +102,11 @@ class RemediationRecommendation(ApiSchema):
     generation_source: RecommendationSource
     template_id: str | None = None
     confidence: RecommendationConfidence
+    # AI-suggested re-classification, always a suggestion for a human
+    # reviewer to accept via POST /findings/{id}/override -- never applied
+    # automatically, and only ever set by a real Ollama classification.
+    suggested_severity: Severity | None = None
+    severity_rationale: str | None = None
 
 
 class DetectionSignal(ApiSchema):

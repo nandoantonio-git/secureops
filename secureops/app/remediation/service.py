@@ -55,6 +55,7 @@ def build_remediation_recommendation(
             file_path=finding.file_path,
             line_start=finding.line_start,
             evidence=evidence,
+            current_severity=_severity_value(finding.severity),
             sink=sink,
             user_input=user_input,
         ),
@@ -77,6 +78,10 @@ def build_remediation_recommendation(
         return fallback
 
     return _build_required_fallback(fallback_context)
+
+
+def _severity_value(severity: Any) -> str:
+    return getattr(severity, "value", severity)
 
 
 def _has_published_fields(
