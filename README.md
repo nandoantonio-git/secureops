@@ -58,6 +58,11 @@ evidence + line) so a manual override — "false positive", "accepted risk" —
 survives a re-scan of the same code instead of resetting to `open` every
 time.
 
+For the system/container-level view (what talks to what, and why each
+external dependency is designed to degrade rather than fail), see
+[docs/architecture/c4-context.md](docs/architecture/c4-context.md) and
+[docs/architecture/c4-container.md](docs/architecture/c4-container.md).
+
 ## Key properties
 
 - **Actionable by construction.** Every published finding carries `cause`,
