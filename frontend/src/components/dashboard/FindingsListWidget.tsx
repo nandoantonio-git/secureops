@@ -4,6 +4,7 @@ import {
   overrideFinding,
   type FindingListItem,
   type FindingStatus,
+  type Severity,
 } from '../../api/dashboard';
 import { useWidgetQuery } from '../../hooks/useWidgetQuery';
 import { SkeletonWidget } from '../shared/SkeletonWidget';
@@ -23,13 +24,46 @@ const STATUS_OPTIONS: { value: FindingStatus; label: string }[] = [
   { value: 'accepted_risk', label: 'Risco aceito' },
 ];
 
+const SEVERITY_OPTIONS: { value: Severity; label: string }[] = [
+  { value: 'critical', label: 'Crítico' },
+  { value: 'high', label: 'Alto' },
+  { value: 'medium', label: 'Médio' },
+  { value: 'low', label: 'Baixo' },
+  { value: 'info', label: 'Informativo' },
+];
+
+const ALL_FILTER_VALUE = '';
+
 export function FindingsListWidget({ repository }: { repository: string }) {
   const [offset, setOffset] = useState(0);
   const [reviewer, setReviewer] = useState('');
-  const { state, retry } = useWidgetQuery(
-    () => getFindings({ repository, limit: PAGE_SIZE, offset }),
-    [repository, offset],
+  const [statusFilter, setStatusFilter] = useState<FindingStatus | ''>(
+    ALL_FILTER_VALUE,
   );
+  const [severityFilter, setSeverityFilter] = useState<Severity | ''>(
+    ALL_FILTER_VALUE,
+  );
+  const { state, retry } = useWidgetQuery(
+    () =>
+      getFindings({
+        repository,
+        limit: PAGE_SIZE,
+        offset,
+        status: statusFilter || undefined,
+        severity: severityFilter || undefined,
+      }),
+    [repository, offset, statusFilter, severityFilter],
+  );
+
+  function handleStatusFilterChange(value: FindingStatus | '') {
+    setStatusFilter(value);
+    setOffset(0);
+  }
+
+  function handleSeverityFilterChange(value: Severity | '') {
+    setSeverityFilter(value);
+    setOffset(0);
+  }
 
   if (state.status === 'loading') {
     return <SkeletonWidget title="Lista de falhas detectadas" />;
@@ -44,19 +78,55 @@ export function FindingsListWidget({ repository }: { repository: string }) {
     <div className="widget widget--scrollable">
       <div className="findings-header">
         <h2 className="widget-title">Lista de falhas detectadas</h2>
-        <label className="reviewer-input">
-          Revisor
-          <input
-            type="text"
-            value={reviewer}
-            onChange={(event) => setReviewer(event.target.value)}
-            placeholder="seu-email@empresa.com"
-          />
-        </label>
+        <div className="findings-filters">
+          <label className="findings-filter">
+            Status
+            <select
+              value={statusFilter}
+              onChange={(event) =>
+                handleStatusFilterChange(event.target.value as FindingStatus | '')
+              }
+            >
+              <option value={ALL_FILTER_VALUE}>Todos</option>
+              {STATUS_OPTIONS.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="findings-filter">
+            Severidade
+            <select
+              value={severityFilter}
+              onChange={(event) =>
+                handleSeverityFilterChange(event.target.value as Severity | '')
+              }
+            >
+              <option value={ALL_FILTER_VALUE}>Todas</option>
+              {SEVERITY_OPTIONS.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="reviewer-input">
+            Revisor
+            <input
+              type="text"
+              value={reviewer}
+              onChange={(event) => setReviewer(event.target.value)}
+              placeholder="seu-email@empresa.com"
+            />
+          </label>
+        </div>
       </div>
       {items.length === 0 ? (
         <p className="widget-empty-state">
-          Nenhum finding aberto. Seu código está limpo por enquanto.
+          {statusFilter || severityFilter
+            ? 'Nenhum finding corresponde aos filtros selecionados.'
+            : 'Nenhum finding aberto. Seu código está limpo por enquanto.'}
         </p>
       ) : (
         <>

@@ -230,6 +230,14 @@ body {
   flex-wrap: wrap;
 }
 
+.findings-filters {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.findings-filter,
 .reviewer-input {
   display: flex;
   align-items: center;
@@ -238,6 +246,7 @@ body {
   color: var(--text-secondary);
 }
 
+.findings-filter select,
 .reviewer-input input {
   font-size: 0.75rem;
   padding: 0.25rem 0.5rem;
