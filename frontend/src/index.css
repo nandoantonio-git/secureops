@@ -1,0 +1,345 @@
+:root {
+  --page-bg: #f8fafc;
+  --widget-bg: #ffffff;
+  --widget-border: #e2e8f0;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --skeleton-bg: #e2e8f0;
+  --skeleton-shine: #f1f5f9;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--page-bg);
+  color: var(--text-primary);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+.overview-page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+.overview-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.overview-header h1 {
+  font-size: 1.375rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.advisory-badge {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  border: 1px solid var(--widget-border);
+}
+
+.widget-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+
+@media (max-width: 800px) {
+  .widget-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.widget {
+  background: var(--widget-bg);
+  border: 1px solid var(--widget-border);
+  border-radius: 12px;
+  padding: 1.25rem;
+  min-height: 220px;
+  overflow-x: auto;
+}
+
+.widget--error {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.widget--scrollable {
+  grid-column: 1 / -1;
+  max-height: 480px;
+  overflow-y: auto;
+}
+
+.widget-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 0 0 1rem;
+  color: var(--text-primary);
+}
+
+.widget-empty-state {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Skeleton loading state */
+
+.skeleton-block {
+  border-radius: 8px;
+  background: linear-gradient(
+    90deg,
+    var(--skeleton-bg) 25%,
+    var(--skeleton-shine) 37%,
+    var(--skeleton-bg) 63%
+  );
+  background-size: 400% 100%;
+  animation: skeleton-shimmer 1.4s ease infinite;
+}
+
+.skeleton-block--static {
+  animation: none;
+  background: var(--skeleton-bg);
+}
+
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+}
+
+/* Donut widget */
+
+.donut-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.donut-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  color: var(--text-primary);
+  pointer-events: none;
+}
+
+.donut-legend {
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.01em;
+  color: var(--text-secondary);
+}
+
+.legend-swatch {
+  display: inline-block;
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  margin-right: 0.35rem;
+}
+
+/* Top critical files widget */
+
+.top-files-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.top-files-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--widget-border);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.top-files-row:last-child {
+  border-bottom: none;
+}
+
+.top-files-path {
+  overflow: hidden;
+  white-space: nowrap;
+  font-family: ui-monospace, Consolas, monospace;
+}
+
+.top-files-count {
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  flex-shrink: 0;
+}
+
+/* Status badge */
+
+.status-badge {
+  display: inline-block;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.status-badge-button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+/* Findings list widget */
+
+.findings-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.reviewer-input {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.reviewer-input input {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--widget-border);
+  border-radius: 6px;
+}
+
+.findings-list {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+}
+
+.finding-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--widget-border);
+}
+
+.finding-row:last-child {
+  border-bottom: none;
+}
+
+.finding-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.finding-title-line {
+  display: flex;
+  gap: 0.5rem;
+  align-items: baseline;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.finding-category {
+  font-weight: 400;
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+}
+
+.finding-description {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--text-primary);
+  margin: 0.15rem 0;
+}
+
+.finding-location {
+  font-size: 0.75rem;
+  letter-spacing: 0.01em;
+  color: var(--text-secondary);
+  font-family: ui-monospace, Consolas, monospace;
+}
+
+.finding-status-control {
+  flex-shrink: 0;
+}
+
+.finding-status-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 180px;
+}
+
+.finding-status-editor select,
+.finding-status-editor input {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.4rem;
+  border: 1px solid var(--widget-border);
+  border-radius: 6px;
+}
+
+.finding-status-editor button {
+  font-size: 0.75rem;
+}
+
+.finding-status-error {
+  color: #b91c1c;
+  font-size: 0.75rem;
+}
+
+.findings-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding-top: 0.75rem;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+/* Reduced motion: defense-in-depth alongside the usePrefersReducedMotion
+   hook that already disables chart/skeleton animation in JS. */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

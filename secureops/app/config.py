@@ -40,6 +40,10 @@ class Settings(BaseSettings):
         default=True,
         description="Use deterministic remediation fallback when Ollama is unavailable.",
     )
+    dashboard_frontend_origin: str = Field(
+        default="http://localhost:5173",
+        description="Allowed CORS origin for the dashboard frontend dev server.",
+    )
 
     model_config = SettingsConfigDict(
         env_file=(".env", "secureops/.env"),
@@ -52,6 +56,7 @@ class Settings(BaseSettings):
         "secondary_language",
         "ollama_base_url",
         "ollama_model",
+        "dashboard_frontend_origin",
     )
     @classmethod
     def require_non_empty(cls, value: str) -> str:

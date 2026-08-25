@@ -7,7 +7,7 @@ from typing import Annotated, Any
 from uuid import uuid4
 
 from fastapi import APIRouter, Path
-from sqlalchemy import select
+from sqlalchemy import delete, select
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
@@ -17,9 +17,6 @@ from app.db.connection import SessionLocal
 from app.engine.parser import UnsupportedLanguageError, normalize_language
 from app.engine.scan import orchestrate_scan
 from app.github.comments import format_pr_feedback
-from app.models import analysis as _analysis_models
-from app.models import finding as _finding_models
-from app.models import remediation as _remediation_models
 from app.models.analysis import (
     GateDecision as GateDecisionModel,
     LanguageCoverageProfile as LanguageCoverageProfileModel,
@@ -34,9 +31,10 @@ from app.models.enums import (
     LanguageCoverageLevel,
     LanguageCoverageRole,
 )
+from app.models.finding import DetectionSignal as DetectionSignalModel
+from app.models.finding import Finding as FindingModel
+from app.models.remediation import RemediationRecommendation as RemediationModel
 from app.remediation.service import build_remediation_recommendation
-
-del _analysis_models, _finding_models, _remediation_models
 
 
 router = APIRouter(tags=["analyses"])
@@ -92,9 +90,22 @@ def create_analysis(request: CreateAnalysisRequest) -> dict[str, Any]:
         repository=request.repository,
         changed_files=request.changed_files,
     )
-    findings = [
-        _serialize_scanned_finding(scanned_finding)
+    findings_with_recommendations = [
+        (
+            scanned_finding,
+            build_remediation_recommendation(
+                finding=scanned_finding.finding,
+                evidence=scanned_finding.evidence,
+                sink=scanned_finding.sink,
+                user_input=scanned_finding.user_input,
+                settings=get_settings(),
+            ),
+        )
         for scanned_finding in scan_result.scanned_findings
+    ]
+    findings = [
+        _serialize_scanned_finding(scanned_finding, recommendation)
+        for scanned_finding, recommendation in findings_with_recommendations
     ]
     from app.api.findings import apply_existing_manual_overrides
 
@@ -136,6 +147,7 @@ def create_analysis(request: CreateAnalysisRequest) -> dict[str, Any]:
         language_coverage_results=coverage_results,
     )
     _persist_analysis_snapshot(analysis, coverage_results, gate_decision)
+    _persist_findings_snapshot(findings_with_recommendations)
     return analysis
 
 
@@ -229,16 +241,12 @@ def get_analysis_pr_feedback(analysis_id: AnalysisId) -> dict[str, str]:
     }
 
 
-def _serialize_scanned_finding(scanned_finding: Any) -> dict[str, Any]:
+def _serialize_scanned_finding(
+    scanned_finding: Any,
+    recommendation: Any,
+) -> dict[str, Any]:
     finding = scanned_finding.finding
     finding.id = str(uuid4())
-    recommendation = build_remediation_recommendation(
-        finding=finding,
-        evidence=scanned_finding.evidence,
-        sink=scanned_finding.sink,
-        user_input=scanned_finding.user_input,
-        settings=get_settings(),
-    )
     return {
         "id": finding.id,
         "analysis_id": finding.analysis_id,
@@ -374,6 +382,106 @@ def _persist_analysis_snapshot(
             session.commit()
     except SQLAlchemyError:
         return
+
+
+def _persist_findings_snapshot(
+    findings_with_recommendations: list[tuple[Any, Any]],
+) -> None:
+    """Persist findings, signals, and remediations when a database is available.
+
+    A fresh scan always rebuilds findings with status OPEN, so an existing row's
+    status (and, once overridden, severity) must never be reset here -- only the
+    override endpoint in app/api/findings.py may change those fields once a
+    reviewer has made a decision. This mirrors preserve_overridden_findings in
+    app/engine/scan.py, reimplemented at the DB layer because this write path
+    does not go through the in-process cache.
+    """
+
+    if not findings_with_recommendations:
+        return
+
+    try:
+        with SessionLocal() as session:
+            for scanned_finding, recommendation in findings_with_recommendations:
+                _upsert_finding_snapshot(session, scanned_finding, recommendation)
+            session.commit()
+    except SQLAlchemyError:
+        return
+
+
+def _upsert_finding_snapshot(
+    session: Session,
+    scanned_finding: Any,
+    recommendation: Any,
+) -> None:
+    finding = scanned_finding.finding
+    existing = session.scalar(
+        select(FindingModel).where(FindingModel.fingerprint == finding.fingerprint),
+    )
+    if existing is None:
+        finding.remediation = _remediation_model(recommendation)
+        session.add(finding)
+        return
+
+    has_override_history = bool(existing.history)
+    existing.analysis_id = finding.analysis_id
+    existing.file_path = finding.file_path
+    existing.line_start = finding.line_start
+    existing.line_end = finding.line_end
+    existing.language = finding.language
+    existing.category = finding.category
+    if not has_override_history:
+        existing.severity = finding.severity
+    existing.updated_at = _utc_now()
+
+    session.execute(
+        delete(DetectionSignalModel).where(
+            DetectionSignalModel.finding_id == existing.id,
+        ),
+    )
+    for signal in finding.detection_signals:
+        session.add(
+            DetectionSignalModel(
+                finding_id=existing.id,
+                signal_type=signal.signal_type,
+                deterministic=signal.deterministic,
+                summary=signal.summary,
+            ),
+        )
+
+    existing_remediation = session.scalar(
+        select(RemediationModel).where(RemediationModel.finding_id == existing.id),
+    )
+    if existing_remediation is None:
+        session.add(_remediation_model(recommendation, finding_id=existing.id))
+        return
+
+    for field_name, value in _remediation_fields(recommendation).items():
+        setattr(existing_remediation, field_name, value)
+
+
+def _remediation_model(
+    recommendation: Any,
+    *,
+    finding_id: str | None = None,
+) -> RemediationModel:
+    fields = _remediation_fields(recommendation)
+    if finding_id is not None:
+        fields["finding_id"] = finding_id
+    return RemediationModel(**fields)
+
+
+def _remediation_fields(recommendation: Any) -> dict[str, Any]:
+    return {
+        "cause": recommendation.cause,
+        "evidence": recommendation.evidence,
+        "impact": recommendation.impact,
+        "recommended_correction": recommendation.recommended_correction,
+        "safe_example": recommendation.safe_example,
+        "generation_source": recommendation.generation_source,
+        "template_id": recommendation.template_id,
+        "confidence": recommendation.confidence,
+    }
 
 
 def _persist_gate_decision_snapshot(gate_decision: dict[str, Any]) -> None:

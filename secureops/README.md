@@ -109,6 +109,48 @@ Expected evidence from a passing run:
 This is the intended US4 governance scope for this phase: minimal visible
 manual override history without full RBAC or a full audit-log subsystem.
 
+## Dashboard (Read-Only Analytics)
+
+`app/api/dashboard.py` exposes read-only analytics endpoints, backed by the
+Postgres rows written by the `/analyses` and `/findings/{findingId}/override`
+persistence paths (`app/api/analyses.py::_persist_findings_snapshot`,
+`app/api/findings.py::_persist_override_snapshot`). Unlike the rest of the
+API, these endpoints are **not** fail-soft: a database error surfaces as a
+`503` (`DependencyUnavailableError`) rather than an empty response, so the
+frontend can distinguish "no findings yet" from "the store is down".
+
+Endpoints (all require a `repository` query parameter):
+
+- `GET /dashboard/severity-distribution` — open/in-investigation counts per
+  severity plus a combined `resolved_accepted` bucket, for the severity donut
+  widget.
+- `GET /dashboard/weekly-trend` — sparse weekly finding counts (only weeks
+  with at least one finding).
+- `GET /dashboard/top-critical-files` — up to `limit` (default 5) files
+  ranked by open critical findings.
+- `GET /dashboard/findings` — paginated, redacted finding list
+  (`status`/`severity` filters, `limit`/`offset`).
+
+A companion React/Vite dashboard app lives in `frontend/` (repo root, outside
+`secureops/`). It reads `VITE_API_BASE_URL` from its own `.env.development`
+(git-ignored `.env.development.local` overrides it for a given machine's port
+forwarding). Run it locally with:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+The FastAPI app allows CORS from `DASHBOARD_FRONTEND_ORIGIN`
+(`app/config.py`, default `http://localhost:5173`) with no credentials, since
+this API has no auth/cookie mechanism today.
+
+Backend test coverage: `tests/integration/test_dashboard_api.py` (endpoint
+behavior, including the `503` on a broken store) and
+`tests/integration/test_finding_persistence.py` (findings/signals/
+remediations/overrides landing correctly in Postgres).
+
 ## Release-Readiness Verification Notes
 
 Local evidence collected on 2026-08-23:

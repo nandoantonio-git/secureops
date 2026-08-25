@@ -32,6 +32,16 @@ FastAPI provides the service boundary, PostgreSQL persists analyses/findings/sta
 
 **Scale/Scope**: MVP validation set includes clean and vulnerable PR scenarios, Python deep coverage, one secondary-language deterministic pattern, an unprotected known critical case, and clean-code non-blocking cases.
 
+## FIAP Evaluation Traceability Notes
+
+These notes map evaluation expectations to existing product decisions and evidence without changing the PR-first SecureOps scope into a checklist-driven demo.
+
+- **Architecture**: FastAPI, PostgreSQL, parser/engine/remediation/GitHub modules, and explicit API contracts show a service-oriented architecture with clear boundaries, durable state, and reproducible local operation.
+- **SAST robustness**: Python deep coverage, AST parsing, deterministic rules, supported taint/data-flow tracking, secondary-language minimum coverage, detection signals, and vulnerable/clean fixtures demonstrate controlled static-analysis depth and known limitations.
+- **AI innovation**: Local Ollama-assisted severity/remediation contextualization, reviewed templates, deterministic fallback, and optional fine-tuning research demonstrate AI use while preserving reliability when AI output is unavailable or low confidence.
+- **DevSecOps**: GitHub Actions dispatch, PR comments/status publishing, advisory-first behavior, restricted critical gate decisions, and `scripts/gate.sh` validation show integration into the pull request workflow.
+- **Defense evidence**: `research.md`, `data-model.md`, `contracts/openapi.yaml`, `quickstart.md`, validation fixtures, clean-code non-blocking checks, critical-case blocking checks, and manual override history provide traceable artifacts for checkpoint review and technical defense.
+
 ## Constitution Check
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*

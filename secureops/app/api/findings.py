@@ -6,12 +6,17 @@ from datetime import datetime, timezone
 from typing import Annotated, Any
 
 from fastapi import APIRouter, Path
+from sqlalchemy import select
+from sqlalchemy.exc import SQLAlchemyError
 
 from app.api.analyses import list_findings_for_analysis
 from app.api.errors import InvalidRequestError, ResourceNotFoundError
 from app.api.schemas import Finding, OverrideFindingRequest
+from app.db.connection import SessionLocal
 from app.models.enums import FindingChangeType, FindingStatus, Severity
 from app.models.finding import (
+    Finding as FindingModel,
+    FindingHistoryEntry as FindingHistoryEntryModel,
     InvalidFindingStatusTransition,
     validate_finding_status_transition,
 )
@@ -90,7 +95,45 @@ def apply_manual_override(
             "created_at": _utc_now(),
         },
     )
+    _persist_override_snapshot(finding, request, from_value)
     return finding
+
+
+def _persist_override_snapshot(
+    finding: dict[str, Any],
+    request: OverrideFindingRequest,
+    from_value: str,
+) -> None:
+    """Best-effort mirror of a manual override into Postgres, by fingerprint."""
+
+    fingerprint = finding.get("fingerprint")
+    if not fingerprint:
+        return
+
+    try:
+        with SessionLocal() as session:
+            existing = session.scalar(
+                select(FindingModel).where(FindingModel.fingerprint == fingerprint),
+            )
+            if existing is None:
+                return
+
+            existing.status = FindingStatus(str(finding["status"]))
+            existing.severity = Severity(str(finding["severity"]))
+            existing.updated_at = _utc_now()
+            session.add(
+                FindingHistoryEntryModel(
+                    finding_id=existing.id,
+                    changed_by=request.changed_by,
+                    change_type=request.change_type,
+                    from_value=from_value,
+                    to_value=request.to_value,
+                    reason=request.reason,
+                ),
+            )
+            session.commit()
+    except SQLAlchemyError:
+        return
 
 
 def apply_existing_manual_overrides(
