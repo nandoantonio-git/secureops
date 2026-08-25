@@ -103,6 +103,26 @@ The dashboard needs `VITE_DASHBOARD_REPOSITORY` set to a repository that
 actually has analyses in the database — see `frontend/.env.development` and
 `frontend/README.md`.
 
+### Or: everything with Docker Compose
+
+```bash
+docker compose up --build
+# API:       http://localhost:8000
+# Dashboard: http://localhost:8080
+```
+
+Starts Postgres, runs `alembic upgrade head` on container start, and builds
+the dashboard as a static bundle served by nginx. Ollama is intentionally
+**not** part of the compose stack — see the comment in `docker-compose.yml`;
+point `OLLAMA_BASE_URL` at a host-run Ollama if you have one, otherwise the
+API falls back to reviewed templates as designed.
+
+The `api` service mounts the whole repo read-only at `/workspace`, so a
+`content_ref` in a `POST /analyses` request resolves the same way it does in
+CI: `/workspace/secureops/tests/fixtures/python_vulnerable/command_injection.py`
+for the bundled fixtures, or `/workspace/<path-from-repo-root>` for anything
+else checked out alongside it.
+
 ### Try it end to end
 
 ```bash

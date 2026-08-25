@@ -1,0 +1,60 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: secureops
+      POSTGRES_PASSWORD: secureops
+      POSTGRES_DB: secureops
+    ports:
+      - "5432:5432"
+    volumes:
+      - secureops-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U secureops -d secureops"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build: ./secureops
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql+psycopg://secureops:secureops@db:5432/secureops
+      GATE_MODE: advisory
+      SECONDARY_LANGUAGE: javascript
+      # Ollama stays outside the compose stack on purpose -- pulling a model
+      # into a container adds real weight to a demo/CI run, and the whole
+      # point of the fallback design is that the service works fine without
+      # it. Point this at a local Ollama on the host if you have one running.
+      OLLAMA_BASE_URL: http://host.docker.internal:11434
+      OLLAMA_MODEL: codellama
+      OLLAMA_TIMEOUT_SECONDS: "10"
+      OLLAMA_FALLBACK_ENABLED: "true"
+      DASHBOARD_FRONTEND_ORIGIN: http://localhost:8080
+    ports:
+      - "8000:8000"
+    volumes:
+      # content_ref in /analyses requests is a filesystem path resolved
+      # inside this container. Mounting the repo root here means fixture
+      # paths like secureops/tests/fixtures/python_vulnerable/... resolve
+      # the same way locally as they do in CI (see .github/workflows).
+      - .:/workspace:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_BASE_URL: http://localhost:8000
+        VITE_DASHBOARD_REPOSITORY: secureops
+        VITE_DASHBOARD_GATE_MODE: advisory
+    depends_on:
+      - api
+    ports:
+      - "8080:80"
+
+volumes:
+  secureops-db-data:
