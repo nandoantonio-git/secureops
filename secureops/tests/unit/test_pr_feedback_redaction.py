@@ -9,26 +9,25 @@ import pytest
 from app.github.comments import format_pr_feedback
 
 
+STRIPE_SECRET_FIXTURE = "sk_" + "live_51H7bP8abcdef0123456789abcdef"
+GITHUB_TOKEN_FIXTURE = "ghp_" + "1234567890ABCDEFGHIJKLMNOPQRSTUV"
+
+
 SENSITIVE_EVIDENCE_CASES: tuple[dict[str, Any], ...] = (
     {
         "id": "hardcoded-secret",
         "file_path": "app/settings.py",
         "line_start": 14,
-        "evidence": (
-            'STRIPE_SECRET_KEY = "sk_example_redaction_fixture"'
-        ),
-        "forbidden_values": ("sk_example_redaction_fixture",),
+        "evidence": f'STRIPE_SECRET_KEY = "{STRIPE_SECRET_FIXTURE}"',
+        "forbidden_values": (STRIPE_SECRET_FIXTURE,),
         "context_terms": ("STRIPE_SECRET_KEY", "app/settings.py", "14"),
     },
     {
         "id": "github-token",
         "file_path": "scripts/deploy.py",
         "line_start": 22,
-        "evidence": (
-            'headers = {"Authorization": "Bearer '
-            'github_token_redaction_fixture"}'
-        ),
-        "forbidden_values": ("github_token_redaction_fixture",),
+        "evidence": f'headers = {{"Authorization": "Bearer {GITHUB_TOKEN_FIXTURE}"}}',
+        "forbidden_values": (GITHUB_TOKEN_FIXTURE,),
         "context_terms": ("Authorization", "Bearer", "scripts/deploy.py", "22"),
     },
     {
