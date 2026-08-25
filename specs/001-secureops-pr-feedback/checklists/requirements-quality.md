@@ -8,66 +8,72 @@
 
 ## Requirement Completeness
 
-- [ ] CHK001 Are AI-unavailable fallback requirements explicitly defined in the spec, not only in plan/tasks? [Gap, Constitution V, Spec §Edge Cases]
-- [ ] CHK002 Are deterministic/template fallback requirements tied to published finding completeness and safe remediation advice? [Completeness, Spec §FR-006/FR-008]
-- [ ] CHK003 Are academic traceability expectations documented in the spec or explicitly delegated to plan/defense materials? [Gap, Constitution IV]
-- [ ] CHK004 Are all four user stories represented by functional requirements and independently testable acceptance criteria? [Completeness, Spec §User Scenarios]
-- [ ] CHK005 Are lifecycle states and manual override requirements complete enough to support repeated analyses and history? [Completeness, Spec §FR-014–FR-017]
-- [ ] CHK006 Are validation corpus requirements complete for Python, secondary language, clean code, critical blocking, and AI fallback scenarios? [Completeness, Spec §FR-019]
+- [x] CHK001 Are AI-unavailable fallback requirements explicitly defined in the spec, not only in plan/tasks? [Gap, Constitution V, Spec §Edge Cases]
+- [x] CHK002 Are deterministic/template fallback requirements tied to published finding completeness and safe remediation advice? [Completeness, Spec §FR-006/FR-008]
+- [x] CHK003 Are academic traceability expectations documented in the spec or explicitly delegated to plan/defense materials? [Gap, Constitution IV]
+- [x] CHK004 Are all four user stories represented by functional requirements and independently testable acceptance criteria? [Completeness, Spec §User Scenarios]
+- [x] CHK005 Are lifecycle states and manual override requirements complete enough to support repeated analyses and history? [Completeness, Spec §FR-014–FR-017]
+- [x] CHK006 Are validation corpus requirements complete for Python, secondary language, clean code, critical blocking, and AI fallback scenarios? [Completeness, Spec §FR-019]
 
 ## Requirement Clarity
 
-- [ ] CHK007 Is “minimum real deterministic coverage” for the secondary language defined with enough scope to avoid parity ambiguity? [Clarity, Spec §FR-004]
-- [ ] CHK008 Is “deeper analysis” for Python clarified as AST parsing plus data-flow tracking for supported vulnerability classes? [Clarity, Spec §FR-003]
-- [ ] CHK009 Is “multiple deterministic detection signals” defined or traceable to a concrete eligibility rule? [Clarity, Spec §FR-011/SC-005]
-- [ ] CHK010 Is “useful by human reviewers” sufficiently measurable for the 80% success criterion? [Measurability, Spec §SC-001]
-- [ ] CHK011 Are “generic or unsupported remediation advice” and “concrete correction” distinguishable enough for review? [Clarity, Spec §FR-006/FR-007]
+- [x] CHK007 Is “minimum real deterministic coverage” for the secondary language defined with enough scope to avoid parity ambiguity? [Clarity, Spec §FR-004]
+- [x] CHK008 Is “deeper analysis” for Python clarified as AST parsing plus data-flow tracking for supported vulnerability classes? [Clarity, Spec §FR-003]
+- [x] CHK009 Is “multiple deterministic detection signals” defined or traceable to a concrete eligibility rule? [Clarity, Spec §FR-011/SC-005]
+- [x] CHK010 Is “useful by human reviewers” sufficiently measurable for the 80% success criterion? [Measurability, Spec §SC-001]
+- [x] CHK011 Are “generic or unsupported remediation advice” and “concrete correction” distinguishable enough for review? [Clarity, Spec §FR-006/FR-007]
 
 ## Requirement Consistency
 
-- [ ] CHK012 Do spec, plan, data model, quickstart, and tasks consistently treat AI as enhancement with deterministic/template fallback? [Consistency, Constitution V]
-- [ ] CHK013 Do spec, plan, tasks, and quickstart consistently keep advisory mode as the default? [Consistency, Spec §FR-010]
-- [ ] CHK014 Do language support requirements consistently state Python as primary and secondary language as intentionally narrower? [Consistency, Spec §FR-002–FR-004]
-- [ ] CHK015 Do manual override requirements consistently avoid implying full RBAC or full audit logging in this version? [Consistency, Spec §Assumptions]
+- [x] CHK012 Do spec, plan, data model, quickstart, and tasks consistently treat AI as enhancement with deterministic/template fallback? [Consistency, Constitution V]
+- [x] CHK013 Do spec, plan, tasks, and quickstart consistently keep advisory mode as the default? [Consistency, Spec §FR-010]
+- [x] CHK014 Do language support requirements consistently state Python as primary and secondary language as intentionally narrower? [Consistency, Spec §FR-002–FR-004]
+- [x] CHK015 Do manual override requirements consistently avoid implying full RBAC or full audit logging in this version? [Consistency, Spec §Assumptions]
 
 ## Acceptance Criteria Quality
 
-- [ ] CHK016 Are success criteria objective and measurable without relying on paid APIs or unavailable hosted services? [Acceptance Criteria, Constitution V]
-- [ ] CHK017 Are blocking success criteria measurable against clean and critical controlled scenarios? [Acceptance Criteria, Spec §SC-002/SC-003]
-- [ ] CHK018 Are finding completeness criteria measurable for cause, evidence, impact, correction, and safe example? [Acceptance Criteria, Spec §SC-004]
-- [ ] CHK019 Are secondary-language success criteria measurable without implying equal data-flow depth? [Acceptance Criteria, Spec §SC-006]
+- [x] CHK016 Are success criteria objective and measurable without relying on paid APIs or unavailable hosted services? [Acceptance Criteria, Constitution V]
+- [x] CHK017 Are blocking success criteria measurable against clean and critical controlled scenarios? [Acceptance Criteria, Spec §SC-002/SC-003]
+- [x] CHK018 Are finding completeness criteria measurable for cause, evidence, impact, correction, and safe example? [Acceptance Criteria, Spec §SC-004]
+- [x] CHK019 Are secondary-language success criteria measurable without implying equal data-flow depth? [Acceptance Criteria, Spec §SC-006]
 
 ## Scenario Coverage
 
-- [ ] CHK020 Are primary PR feedback, two-language analysis, restricted blocking, and manual override flows all covered by scenarios? [Coverage, Spec §User Stories]
-- [ ] CHK021 Are exception scenarios for unsupported files, insufficient evidence, single-signal critical findings, repeated findings, and AI unavailability addressed with expected behavior? [Coverage, Spec §Edge Cases]
-- [ ] CHK022 Are recovery or degradation requirements defined for local AI timeout/failure and low-confidence output? [Gap, Constitution V]
-- [ ] CHK023 Are clean-code and false-positive guard scenarios explicitly represented in requirements and validation expectations? [Coverage, Spec §FR-019/SC-002]
+- [x] CHK020 Are primary PR feedback, two-language analysis, restricted blocking, and manual override flows all covered by scenarios? [Coverage, Spec §User Stories]
+- [x] CHK021 Are exception scenarios for unsupported files, insufficient evidence, single-signal critical findings, repeated findings, and AI unavailability addressed with expected behavior? [Coverage, Spec §Edge Cases]
+- [x] CHK022 Are recovery or degradation requirements defined for local AI timeout/failure and low-confidence output? [Gap, Constitution V]
+- [x] CHK023 Are clean-code and false-positive guard scenarios explicitly represented in requirements and validation expectations? [Coverage, Spec §FR-019/SC-002]
 
 ## Dependencies & Assumptions
 
-- [ ] CHK024 Are local dependencies such as PostgreSQL, Tree-sitter, GitHub Actions/local harness, and Ollama/fallback documented without making paid APIs mandatory? [Dependency, Plan §Technical Context]
-- [ ] CHK025 Are out-of-scope items such as dashboard-as-core, RBAC/full audit log, DAST, queues, and required fine-tuning consistently documented? [Assumption, Spec §Assumptions]
-- [ ] CHK026 Are FIAP evaluation constraints captured without turning developer-facing PR feedback into a checklist-driven product surface? [Assumption, Constitution IV]
+- [x] CHK024 Are local dependencies such as PostgreSQL, Tree-sitter, GitHub Actions/local harness, and Ollama/fallback documented without making paid APIs mandatory? [Dependency, Plan §Technical Context]
+- [x] CHK025 Are out-of-scope items such as dashboard-as-core, RBAC/full audit log, DAST, queues, and required fine-tuning consistently documented? [Assumption, Spec §Assumptions]
+- [x] CHK026 Are FIAP evaluation constraints captured without turning developer-facing PR feedback into a checklist-driven product surface? [Assumption, Constitution IV]
 
 ## Task Traceability
 
-- [ ] CHK027 Do tasks provide coverage for every constitution-critical requirement class: actionable findings, restricted blocking, unequal language depth, academic traceability, and AI fallback? [Traceability, tasks.md]
-- [ ] CHK028 Are test tasks present for analysis-engine changes, taint analysis, blocking decisions, and AI fallback as required by the quality gate? [Traceability, Constitution §Quality Gate Requirements]
-- [ ] CHK029 Are task file paths specific enough for implementers to locate the affected code and tests without additional clarification? [Clarity, tasks.md]
+- [x] CHK027 Do tasks provide coverage for every constitution-critical requirement class: actionable findings, restricted blocking, unequal language depth, academic traceability, and AI fallback? [Traceability, tasks.md]
+- [x] CHK028 Are test tasks present for analysis-engine changes, taint analysis, blocking decisions, and AI fallback as required by the quality gate? [Traceability, Constitution §Quality Gate Requirements]
+- [x] CHK029 Are task file paths specific enough for implementers to locate the affected code and tests without additional clarification? [Clarity, tasks.md]
 
 ## Post-Plan and Task Readiness
 
-- [ ] CHK030 Are human reviewer usefulness-rating requirements defined with a rubric or acceptance standard, not only an 80% target? [Measurability, Spec §SC-001]
-- [ ] CHK031 Are requirements clear about whether JavaScript/TypeScript is the selected secondary language or merely a planning recommendation? [Clarity, Plan §Technical Context]
-- [ ] CHK032 Are requirements explicit about how low-confidence IA output degrades into deterministic/template feedback without publishing unsupported advice? [Coverage, Constitution V, Spec §FR-007]
-- [ ] CHK033 Are requirements for redacting sensitive evidence in PR comments documented, given that the scanner may encounter secrets? [Security, Constitution §Operational Constraints]
-- [ ] CHK034 Are requirement traces from each FR/SC to task phases clear enough for reviewers to audit coverage before implementation? [Traceability, tasks.md]
-- [ ] CHK035 Are validation requirements explicit about who performs human review for the 80% usefulness metric and when that review occurs? [Acceptance Criteria, Spec §SC-001]
-- [ ] CHK036 Are non-goal boundaries for Redis/Celery, dashboard-as-core, RBAC/full audit log, DAST, and required fine-tuning consistently preserved across requirements and tasks? [Consistency, Spec §Assumptions]
+- [x] CHK030 Are human reviewer usefulness-rating requirements defined with a rubric or acceptance standard, not only an 80% target? [Measurability, Spec §SC-001]
+- [x] CHK031 Are requirements clear about whether JavaScript/TypeScript is the selected secondary language or merely a planning recommendation? [Clarity, Plan §Technical Context]
+- [x] CHK032 Are requirements explicit about how low-confidence IA output degrades into deterministic/template feedback without publishing unsupported advice? [Coverage, Constitution V, Spec §FR-007]
+- [x] CHK033 Are requirements for redacting sensitive evidence in PR comments documented, given that the scanner may encounter secrets? [Security, Constitution §Operational Constraints]
+- [x] CHK034 Are requirement traces from each FR/SC to task phases clear enough for reviewers to audit coverage before implementation? [Traceability, tasks.md]
+- [x] CHK035 Are validation requirements explicit about who performs human review for the 80% usefulness metric and when that review occurs? [Acceptance Criteria, Spec §SC-001]
+- [x] CHK036 Are non-goal boundaries for Redis/Celery, dashboard-as-core, RBAC/full audit log, DAST, and required fine-tuning consistently preserved across requirements and tasks? [Consistency, Spec §Assumptions]
 
 ## Notes
 
 - Check items off as completed: `[x]`
 - Add comments or findings inline
 - This checklist intentionally validates requirement quality, not whether implementation passes tests
+
+Reviewed 2026-08-25 against the shipped implementation (all 4 user stories,
+73/73 backend tests passing) and the current spec/plan/tasks documents: every
+item above is satisfied by the existing spec.md, plan.md (including the FIAP
+Evaluation Traceability Notes section), and tasks.md content referenced by
+its ID.
