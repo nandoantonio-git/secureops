@@ -1,5 +1,7 @@
 """Application settings for SecureOps."""
 
+from __future__ import annotations
+
 from functools import lru_cache
 
 from pydantic import Field, field_validator
@@ -43,6 +45,15 @@ class Settings(BaseSettings):
     dashboard_frontend_origin: str = Field(
         default="http://localhost:5173",
         description="Allowed CORS origin for the dashboard frontend dev server.",
+    )
+    github_token: str | None = Field(
+        default=None,
+        description=(
+            "GitHub token used to publish PR comments and commit statuses. "
+            "Publishing is skipped (not an error) when this is unset, so the "
+            "API keeps working in any environment that isn't wired to a "
+            "real GitHub repository."
+        ),
     )
 
     model_config = SettingsConfigDict(

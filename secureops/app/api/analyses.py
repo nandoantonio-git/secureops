@@ -17,6 +17,7 @@ from app.db.connection import SessionLocal
 from app.engine.parser import UnsupportedLanguageError, normalize_language
 from app.engine.scan import orchestrate_scan
 from app.github.comments import format_pr_feedback
+from app.github.publisher import publish_pr_feedback
 from app.models.analysis import (
     GateDecision as GateDecisionModel,
     LanguageCoverageProfile as LanguageCoverageProfileModel,
@@ -148,6 +149,13 @@ def create_analysis(request: CreateAnalysisRequest) -> dict[str, Any]:
     )
     _persist_analysis_snapshot(analysis, coverage_results, gate_decision)
     _persist_findings_snapshot(findings_with_recommendations)
+    _publish_to_github(
+        repository=request.repository,
+        pull_request_number=request.pull_request_number,
+        commit_sha=request.commit_sha,
+        comment_body=_PR_FEEDBACK_BY_ANALYSIS[analysis_id],
+        gate_decision=gate_decision,
+    )
     return analysis
 
 
@@ -711,6 +719,35 @@ def _gate_decision_from_model(
         "reasons": list(gate_decision.reasons),
         "blocking_findings": list(gate_decision.blocking_finding_ids),
     }
+
+
+def _publish_to_github(
+    *,
+    repository: str,
+    pull_request_number: int | None,
+    commit_sha: str,
+    comment_body: str,
+    gate_decision: dict[str, Any],
+) -> None:
+    """Best-effort publish, mirroring the persistence pattern above: a GitHub
+    API failure or missing token must never fail the analysis response.
+
+    publish_pr_feedback already catches GitHub/network errors internally and
+    returns a PublishResult instead of raising; this call is additionally
+    wrapped so the same guarantee holds even if that inner contract is ever
+    violated (e.g. by a future change, or a test double)."""
+
+    try:
+        publish_pr_feedback(
+            repository=repository,
+            pull_request_number=pull_request_number,
+            commit_sha=commit_sha,
+            comment_body=comment_body,
+            gate_decision=gate_decision,
+            token=get_settings().github_token,
+        )
+    except Exception:  # noqa: BLE001, S110 - see docstring
+        pass
 
 
 def _build_gate_decision(

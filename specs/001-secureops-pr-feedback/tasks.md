@@ -306,3 +306,11 @@ With four to five contributors:
 - Constitution-critical quality gates are captured in test and validation tasks for analysis engine, taint analysis, blocking, and AI fallback.
 - Do not add Redis/Celery, dashboard-as-core, RBAC/full audit log, DAST, or required fine-tuning in this phase.
 - Commit after each completed phase or independently validated user story.
+
+
+---
+
+## Phase 8: Convergence
+
+- [x] T071 [CRITICAL] Implement an authenticated, mock-testable GitHub PR publishing path that posts the generated redacted feedback comment and commit status/check output directly into the Pull Request context per FR-001, FR-006, and plan: critical MVP flow (missing)
+- [ ] T072 [HIGH] Add a GitHub Actions pull_request/dry-run workflow or fixture-backed CI entrypoint that dispatches SecureOps analysis and surfaces the generated comment/status evidence per plan: GitHub Actions dispatch and PR workflow validation (missing)
