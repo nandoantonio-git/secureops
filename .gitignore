@@ -1,0 +1,7 @@
+# macOS
+.DS_Store
+
+# Personal/local-only
+.devcontainer/
+CLAUDE.md
+scratch/
