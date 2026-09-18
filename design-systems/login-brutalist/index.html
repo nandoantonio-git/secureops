@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SecureOps — Login</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+  <div class="grid-bg" aria-hidden="true"></div>
+
+  <header class="nav">
+    <span class="t3 nav__brand">SECUREOPS</span>
+    <span class="t3 nav__tag">AUTH_MODULE // V1.0</span>
+  </header>
+
+  <main class="wrap">
+    <section class="card" aria-labelledby="login-title">
+      <p class="t3 card__eyebrow">&gt; LOGIN</p>
+      <h1 id="login-title" class="h1">ACCESS TERMINAL</h1>
+      <p class="t2">Insira suas credenciais para continuar.</p>
+
+      <form class="form" novalidate>
+        <div class="field">
+          <label class="label" for="email">EMAIL</label>
+          <input class="input" type="email" id="email" name="email" placeholder="voce@dominio.com" autocomplete="username" required />
+        </div>
+
+        <div class="field">
+          <label class="label" for="password">SENHA</label>
+          <div class="input-group">
+            <input class="input" type="password" id="password" name="password" placeholder="••••••••" autocomplete="current-password" required />
+            <button class="toggle-visibility" type="button" data-target="password" aria-label="Mostrar senha" aria-pressed="false">
+              <svg class="icon icon--eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+              <svg class="icon icon--eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" hidden>
+                <path d="M3 3l18 18" />
+                <path d="M10.6 10.6a3 3 0 0 0 4.24 4.24" />
+                <path d="M9.9 5.1A11 11 0 0 1 12 5c7 0 11 7 11 7a13.2 13.2 0 0 1-3.1 3.6M6.6 6.6C3.9 8.3 2 12 2 12s4 7 11 7c1.4 0 2.7-.24 3.9-.66" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="row">
+          <label class="checkbox">
+            <input type="checkbox" name="remember" />
+            <span class="checkbox__box" aria-hidden="true"></span>
+            <span class="t2">MANTER CONECTADO</span>
+          </label>
+          <a class="lnk" href="#">ESQUECEU A SENHA?</a>
+        </div>
+
+        <button class="btn btn--primary" type="submit">ENTRAR NO SISTEMA</button>
+
+        <p class="form__status" role="status" aria-live="polite"></p>
+      </form>
+
+      <div class="divider" role="separator">
+        <span class="t3">OU</span>
+      </div>
+
+      <a class="lnk lnk--block" href="#">CRIAR NOVA CONTA →</a>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span class="t3">SECUREOPS © 2026 · BUILD 0x1F4A9 · TODOS OS DIREITOS RESERVADOS</span>
+  </footer>
+
+  <script src="assets/app.js" defer></script>
+</body>
+</html>
