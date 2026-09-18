@@ -1,0 +1,382 @@
+/* ---------------------------------------------------------------------
+   SecureOps — Login (brutalist, preto e branco puro)
+   --------------------------------------------------------------------- */
+
+:root {
+  --black: #000000;
+  --white: #ffffff;
+
+  --border-w: 4px;
+  --border-w-lg: 6px;
+  --shadow-offset: 10px;
+  --radius: 0px;
+
+  --font-display: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+
+  --gap: 24px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+}
+
+body {
+  background: var(--white);
+  color: var(--black);
+  font-family: var(--font-mono);
+  position: relative;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* fundo: grid pontilhado, puro CSS, sem imagens */
+.grid-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image:
+    linear-gradient(var(--black) 1px, transparent 1px),
+    linear-gradient(90deg, var(--black) 1px, transparent 1px);
+  background-size: 40px 40px;
+  opacity: 0.06;
+}
+
+/* ---------- tipografia utilitária ---------- */
+
+.h1 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(28px, 5vw, 40px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  margin: 8px 0 12px;
+}
+
+.t2 {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.t3 {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+/* ---------- nav ---------- */
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 28px;
+  border-bottom: var(--border-w) solid var(--black);
+  background: var(--white);
+}
+
+.nav__brand {
+  font-family: var(--font-display);
+  font-size: 16px;
+}
+
+.nav__tag {
+  opacity: 0.7;
+}
+
+/* ---------- layout central ---------- */
+
+.wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 20px;
+}
+
+.card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--white);
+  border: var(--border-w-lg) solid var(--black);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--black);
+  padding: 36px 32px 32px;
+}
+
+.card__eyebrow {
+  opacity: 0.6;
+  margin-bottom: 4px;
+}
+
+/* ---------- form ---------- */
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-top: 28px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.input {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  padding: 12px 14px;
+  border: var(--border-w) solid var(--black);
+  border-radius: var(--radius);
+  background: var(--white);
+  color: var(--black);
+  outline: none;
+  width: 100%;
+}
+
+.input::placeholder {
+  color: var(--black);
+  opacity: 0.35;
+}
+
+.input:focus {
+  background: var(--black);
+  color: var(--white);
+}
+
+.input:focus::placeholder {
+  color: var(--white);
+  opacity: 0.4;
+}
+
+.input-group {
+  position: relative;
+  display: flex;
+}
+
+.input-group .input {
+  padding-right: 48px;
+}
+
+.toggle-visibility {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-left: var(--border-w) solid var(--black);
+  cursor: pointer;
+  color: var(--black);
+}
+
+.input:focus + .toggle-visibility,
+.toggle-visibility:hover {
+  background: var(--black);
+  color: var(--white);
+  border-left-color: var(--white);
+}
+
+.icon {
+  width: 18px;
+  height: 18px;
+}
+
+/* ---------- linha: checkbox + link ---------- */
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 2px;
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.checkbox input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.checkbox__box {
+  width: 18px;
+  height: 18px;
+  border: var(--border-w) solid var(--black);
+  display: inline-block;
+  flex: none;
+  position: relative;
+}
+
+.checkbox input:checked + .checkbox__box::after {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  background: var(--black);
+}
+
+.checkbox input:focus-visible + .checkbox__box {
+  outline: 2px solid var(--black);
+  outline-offset: 2px;
+}
+
+.lnk {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--black);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 2px;
+}
+
+.lnk:hover {
+  background: var(--black);
+  color: var(--white);
+}
+
+.lnk--block {
+  display: block;
+  text-align: center;
+  padding: 10px 0;
+}
+
+/* ---------- botão primário ---------- */
+
+.btn {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border: var(--border-w) solid var(--black);
+  border-radius: var(--radius);
+  cursor: pointer;
+  padding: 14px 18px;
+}
+
+.btn--primary {
+  background: var(--black);
+  color: var(--white);
+  box-shadow: 6px 6px 0 0 var(--black);
+  margin-top: 4px;
+}
+
+.btn--primary:hover {
+  background: var(--white);
+  color: var(--black);
+}
+
+.btn--primary:active {
+  box-shadow: 2px 2px 0 0 var(--black);
+  transform: translate(4px, 4px);
+}
+
+.form__status {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  min-height: 16px;
+  margin: 0;
+}
+
+.form__status[data-state='error'] {
+  color: var(--black);
+  background: repeating-linear-gradient(
+    45deg,
+    var(--white),
+    var(--white) 4px,
+    rgba(0, 0, 0, 0.15) 4px,
+    rgba(0, 0, 0, 0.15) 8px
+  );
+  border: var(--border-w) solid var(--black);
+  padding: 8px 10px;
+}
+
+.form__status[data-state='success'] {
+  background: var(--black);
+  color: var(--white);
+  padding: 8px 10px;
+}
+
+/* ---------- divisor ---------- */
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 28px 0 18px;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  height: var(--border-w);
+  background: var(--black);
+}
+
+/* ---------- footer ---------- */
+
+.footer {
+  border-top: var(--border-w) solid var(--black);
+  padding: 16px 28px;
+  text-align: center;
+  opacity: 0.7;
+}
+
+/* ---------- responsivo ---------- */
+
+@media (max-width: 480px) {
+  .card {
+    padding: 28px 20px 24px;
+    border-width: var(--border-w);
+    box-shadow: 6px 6px 0 0 var(--black);
+  }
+
+  .nav {
+    padding: 16px 18px;
+  }
+
+  .row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

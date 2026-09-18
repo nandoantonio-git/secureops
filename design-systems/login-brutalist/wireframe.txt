@@ -1,0 +1,54 @@
+WIREFRAME — login-brutalist
+(sem imagem de referência; layout padrão definido diretamente nesta etapa,
+ seguindo o vocabulário tipado da skill $to-wireframe)
+
+[page]
+  [nav]
+    [t3: "SECUREOPS"]                      -> marca, canto superior esquerdo
+    [t3: "AUTH_MODULE // V1.0"]             -> tag técnica, canto superior direito
+
+  [card: login]
+    [t3: "> LOGIN"]                        -> selo pequeno acima do título
+    [h1: "ACCESS TERMINAL"]
+    [t2: "Insira suas credenciais para continuar."]
+
+    [form]
+      [label: "EMAIL"]
+      [input: email]
+      [label: "SENHA"]
+      [input: password]
+      [btn: "MOSTRAR" | variante icon-toggle]   -> alterna visibilidade da senha
+
+      [chk: "MANTER CONECTADO"]
+      [lnk: "ESQUECEU A SENHA?"]
+
+      [btn: "ENTRAR NO SISTEMA" | variante primary-block]
+
+    [t3: "— OU —"]                          -> divisor
+    [lnk: "CRIAR NOVA CONTA →"]
+
+  [t3: "SECUREOPS © 2026 · BUILD 0x1F4A9 · TODOS OS DIREITOS RESERVADOS"]  -> rodapé
+
+---
+
+PLANO DE IMPLEMENTAÇÃO
+
+| Região / elemento              | Etapa | Técnica prevista                              |
+|---------------------------------|-------|------------------------------------------------|
+| Fundo da tela (grid + textura)  | 2     | CSS puro: cor sólida preta + grid-lines em SVG inline (sem imagens externas) |
+| Nav (marca + tag)               | 3     | HTML/CSS; tipografia monoespaçada              |
+| Card de login (borda/offset)    | 3     | HTML/CSS; borda grossa + hard-shadow offset (sem blur) |
+| Form (labels, inputs, checkbox) | 3     | HTML/CSS; inputs quadrados, foco com invert P/B |
+| Toggle mostrar senha            | 3 / 4 | Estrutura na 3; ícone SVG inline (sem asset externo) na 4 |
+| Botão primário                  | 3     | HTML/CSS; hover invert preto/branco             |
+| Rodapé                          | 3     | HTML/CSS                                        |
+| Tela completa                   | 5     | Revisão integrada, contraste e responsividade   |
+
+Paleta: exclusivamente preto (#000000) e branco (#FFFFFF), sem tons de cinza,
+sem gradientes, sem sombras suaves (blur). Estética brutalista: bordas grossas,
+cantos retos (sem border-radius), tipografia monoespaçada/grotesca em caixa alta,
+sombras "hard" deslocadas (offset shadow sólido).
+
+Como não há imagem de referência, as etapas 1 (crop/OCR) e a geração de assets
+via IA (etapa 4) não se aplicam; ícones foram substituídos por SVG inline
+desenhado à mão (linhas retas, sem preenchimento em escala de cinza).
